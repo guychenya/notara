@@ -598,7 +598,7 @@ const EditorWorkspace = () => {
                <div key={note.id} className="relative group flex items-center">
                     <button 
                         onClick={() => setActiveNoteId(note.id)}
-                        className={`w-full flex items-center gap-3 px-3 py-2 pr-32 text-sm rounded-lg transition-colors text-left ${
+                        className={`w-full flex items-center gap-3 px-3 py-2 group-hover:pr-28 text-sm rounded-lg transition-all text-left ${
                             activeNoteId === note.id 
                             ? 'bg-gray-200 dark:bg-[#1C1C1C] text-gray-900 dark:text-white border border-gray-300 dark:border-[#333]' 
                             : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#1A1A1A] hover:text-gray-700 dark:hover:text-gray-200'
@@ -608,7 +608,7 @@ const EditorWorkspace = () => {
                         <FileText className={`w-4 h-4 shrink-0 ${activeNoteId === note.id ? 'text-emerald-500' : 'text-gray-500 dark:text-gray-500'}`} />
                         <span className="truncate flex-1">{note.title || "Untitled Note"}</span>
                     </button>
-                    <div className="absolute right-1 top-0 bottom-0 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-gradient-to-l from-gray-50 dark:from-[#111111] via-gray-50 dark:via-[#111111] to-transparent pl-8 pr-1 group-hover:from-gray-100 dark:group-hover:from-[#1A1A1A]">
+                    <div className="absolute right-1 top-0 bottom-0 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-gradient-to-l from-gray-100 dark:from-[#1A1A1A] via-gray-100 dark:via-[#1A1A1A] to-transparent pl-6 pr-1">
                         <button 
                             onClick={() => {
                               const newFavs = new Set(favorites);
