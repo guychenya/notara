@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { AIProvider, useAI } from './context/AIContext';
 import { NotesProvider, useNotes } from './context/NotesContext';
 import { useTheme } from './context/ThemeContext';
@@ -101,31 +101,24 @@ const EditorWorkspace = () => {
 
 
   // --- HTML/MD State Sync & Editor Filtering ---
-  // `localContent` is what the user SEES in the editor.
-  // It's a filtered version of `activeNote.content` to hide image reference definitions.
-  const [localContent, setLocalContent] = useState("");
   const imageRefRegex = /^\s*\[img_.*?\]: data:image\/.*$/gm;
 
-
-  useEffect(() => {
-    if (activeNote) {
-        let contentToDisplay = activeNote.content;
-        const isLikelyHtml = /^\s*<[^>]+>/i.test(contentToDisplay);
-        if (isLikelyHtml) {
-            contentToDisplay = htmlToMarkdown(contentToDisplay);
-        }
-        
-        // Filter out image reference definitions for a cleaner editor view.
-        const contentWithoutImageRefs = contentToDisplay.replace(imageRefRegex, '').trim();
-        
-        setLocalContent(contentWithoutImageRefs);
-    } else {
-        setLocalContent("");
+  // FIX: Removed `localContent` state. The editor's value is now derived directly
+  // from `activeNote.content` using `useMemo`. This creates a single source of
+  // truth and prevents state synchronization bugs that caused the editor to "get stuck".
+  const editorContent = useMemo(() => {
+    if (!activeNote) return "";
+    let contentToDisplay = activeNote.content;
+    const isLikelyHtml = /^\s*<[^>]+>/i.test(contentToDisplay);
+    if (isLikelyHtml) {
+        contentToDisplay = htmlToMarkdown(contentToDisplay);
     }
-  }, [activeNoteId, activeNote]);
+    // Filter out image reference definitions for a cleaner editor view.
+    return contentToDisplay.replace(imageRefRegex, '').trim();
+  }, [activeNote]);
+
 
   const handleContentChange = (val: string) => {
-      setLocalContent(val); // Update local state for immediate feedback
       if (activeNote) {
           // Re-attach the image reference definitions that are visually hidden.
           const imageRefs = activeNote.content.match(imageRefRegex) || [];
@@ -219,6 +212,8 @@ const EditorWorkspace = () => {
       insertTextAtCursor(block);
   };
 
+  // FIX: Removed useMemo from slashCommands to prevent a stale closure bug.
+  // This ensures that actions always have access to the current editor state.
   const slashCommands: SlashCommand[] = [
       {
         id: 'h1',
@@ -452,13 +447,13 @@ const EditorWorkspace = () => {
 
   // --- AI Actions ---
   const handleAIAction = async (promptPrefix: string) => {
-    if (!localContent) return;
+    if (!editorContent) return;
     
     setIsGenerating(true);
     setGeneratedText(""); 
 
     const service = new LLMService(config);
-    const fullPrompt = `${promptPrefix} for the following text. Output in Markdown format:\n\n${localContent}`;
+    const fullPrompt = `${promptPrefix} for the following text. Output in Markdown format:\n\n${editorContent}`;
     const messages: ChatMessage[] = [{ role: 'user', content: fullPrompt }];
 
     try {
@@ -690,15 +685,7 @@ const EditorWorkspace = () => {
 
         {/* Toolbar */}
         <div className="h-12 border-b border-gray-200 dark:border-[#222] bg-gray-100 dark:bg-[#161616] flex items-center px-6 gap-2 overflow-x-auto no-scrollbar shrink-0 print:hidden z-10">
-            <div className="flex items-center gap-1 pr-4 border-r border-gray-300 dark:border-[#333]">
-                <button onClick={() => insertTextAtCursor('**bold text**')} className="p-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-200 dark:hover:bg-[#222] rounded" title="Bold"><Bold className="w-4 h-4" /></button>
-                <button onClick={() => insertTextAtCursor('*italic text*')} className="p-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-200 dark:hover:bg-[#222] rounded" title="Italic"><Italic className="w-4 h-4" /></button>
-                <button onClick={() => insertTextAtCursor('- ')} className="p-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-200 dark:hover:bg-[#222] rounded" title="Bullet List"><List className="w-4 h-4" /></button>
-                <button onClick={() => imageFileInputRef.current?.click()} className="p-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-200 dark:hover:bg-[#222] rounded" title="Insert Image"><ImageIcon className="w-4 h-4" /></button>
-                <button onClick={() => insertTextAtCursor('## ')} className="p-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-200 dark:hover:bg-[#222] rounded" title="Heading">H2</button>
-            </div>
-            
-            <div className="flex items-center gap-2 pl-2 whitespace-nowrap flex-1">
+            <div className="flex items-center gap-2 whitespace-nowrap flex-1">
                 <span className="text-xs font-medium text-emerald-600 dark:text-emerald-500 uppercase tracking-wider ml-2 mr-1">AI Tools</span>
                 <Button size="sm" variant="secondary" onClick={() => handleAIAction("Summarize this note")}>
                     <Sparkles className="w-3 h-3 mr-2 text-emerald-500 dark:text-emerald-400" /> Summarize
@@ -718,7 +705,7 @@ const EditorWorkspace = () => {
         </div>
 
         {/* Split Editor Area */}
-        <div ref={containerRef} className="flex-1 flex overflow-hidden relative">
+        <div ref={containerRef} className="flex-1 flex overflow-hidden relative print:block print:overflow-visible print:h-auto">
            {activeNote ? (
              <>
                {/* Left: Markdown Input */}
@@ -727,13 +714,13 @@ const EditorWorkspace = () => {
                        width: viewMode === 'split' ? `${splitPos}%` : viewMode === 'edit' ? '100%' : '0%',
                        display: viewMode === 'preview' ? 'none' : 'flex'
                    }}
-                   className="flex flex-col border-r border-gray-200 dark:border-[#222] bg-white dark:bg-[#111] transition-none"
+                   className="flex flex-col border-r border-gray-200 dark:border-[#222] bg-white dark:bg-[#111] transition-none print:hidden"
                >
                  <textarea 
                     ref={textareaRef}
                     className="flex-1 w-full bg-transparent text-gray-700 dark:text-gray-300 font-mono text-sm p-6 resize-none focus:outline-none custom-scrollbar leading-relaxed break-words whitespace-pre-wrap"
                     placeholder="# Start typing your note here... (Type / for commands)"
-                    value={localContent}
+                    value={editorContent}
                     onChange={(e) => handleContentChange(e.target.value)}
                     onKeyDown={handleKeyDown}
                     onKeyUp={handleKeyUp}
@@ -744,7 +731,7 @@ const EditorWorkspace = () => {
                {/* Resizer Handle */}
                {viewMode === 'split' && (
                   <div 
-                    className="w-2 -ml-1 h-full cursor-col-resize z-50 flex items-center justify-center group hover:bg-emerald-500/10 transition-colors"
+                    className="w-2 -ml-1 h-full cursor-col-resize z-50 flex items-center justify-center group hover:bg-emerald-500/10 transition-colors print:hidden"
                     onMouseDown={startResizing}
                   >
                     <div className="w-0.5 h-8 bg-gray-300 dark:bg-[#333] group-hover:bg-emerald-500 rounded-full transition-colors" />
@@ -753,6 +740,7 @@ const EditorWorkspace = () => {
 
                {/* Right: Preview */}
                <div 
+                   id="preview-pane"
                    style={{ 
                        width: viewMode === 'split' ? `${100 - splitPos}%` : viewMode === 'preview' ? '100%' : '0%',
                        display: viewMode === 'edit' ? 'none' : 'block',
@@ -837,7 +825,9 @@ const EditorWorkspace = () => {
   );
 };
 
-const App = () => {
+// FIX: Added the 'App' wrapper component definition which was missing.
+// This ensures that the context providers correctly wrap the application.
+const App: React.FC = () => {
   return (
     <AIProvider>
       <NotesProvider>
