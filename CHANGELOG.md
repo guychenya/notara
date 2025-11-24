@@ -2,6 +2,26 @@
 
 All notable changes to Notara will be documented in this file.
 
+## [1.2.0] - 2025-11-24
+
+### Added
+- **Action Buttons on AI Responses** - Each AI response now has Discard, Copy, New Note, and Insert buttons
+- **Dotted Canvas Background** - AI sidebar now features a subtle pale dotted pattern
+- **Always-Visible Logo** - Notara logo in header toggles sidebar on/off
+- **Thin Scrollbars** - 4px thin scrollbars with transparent track for cleaner UI
+
+### Changed
+- **Unified AI Interface** - Removed separate AI output panel, all AI interactions now in chat sidebar
+- **AI Tools Integration** - All 9 AI tools (Summarize, Improve, Explain, etc.) send results to chat sidebar
+- **Text Selection Toolbar** - Selection actions now open chat sidebar with results
+- **Gemini as Default** - Set Gemini API as default provider with environment variable support
+- **Removed Duplicate Logo** - Logo only appears in header, removed from sidebar
+
+### Fixed
+- **Canvas-Style Layout** - AI sidebar now integrated into layout (content shrinks, no overlay)
+- **Resizable Sidebar** - Drag left edge to resize between 300px-800px
+- **Repository Visibility** - Changed to private repository
+
 ## [1.1.0] - 2025-11-24
 
 ### Added
@@ -70,7 +90,7 @@ All notable changes to Notara will be documented in this file.
 
 ### Infrastructure
 - Created Dockerfile for containerized deployment
-- Set up GitHub repository: guychenya/lumen-notes-ai
+- Set up GitHub repository: guychenya/lumen-notes-ai (now private)
 - Configured environment variables for API keys
 - Implemented rolling updates for zero-downtime deployments
 
@@ -88,7 +108,7 @@ All notable changes to Notara will be documented in this file.
 
 ## Upcoming Features
 
-### Next Release (v1.2.0)
+### Next Release (v1.3.0)
 - [ ] Cloud sync and backup
 - [ ] Note linking and backlinks
 - [ ] Export to PDF/Markdown/HTML

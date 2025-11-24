@@ -28,11 +28,13 @@ Notara is an intelligent note-taking application that combines the simplicity of
 - **Word Count & Timestamps** - Track your writing progress
 
 ### 🤖 AI-Powered Tools
-- **Resizable AI Chat Sidebar** - Gemini Canvas-style interface with drag-to-resize
+- **Resizable AI Chat Sidebar** - Gemini Canvas-style interface with drag-to-resize and dotted canvas background
+- **Action Buttons** - Discard, Copy, New Note, and Insert buttons on every AI response
 - **9 AI Text Tools** - Summarize, Improve, Explain, Continue, Expand, Shorten, Bullets, Actions, Translate
 - **Text Selection Toolbar** - Context-aware AI operations on selected text
 - **Auto-Tagging** - AI generates relevant tags for your notes
 - **Smart Assistance** - Context-aware help based on current note
+- **Unified Interface** - All AI interactions in one beautiful sidebar
 
 ### ⚡ Productivity Features
 - **Command Palette** (Cmd/Ctrl+K) - Quick access to all features
@@ -144,10 +146,11 @@ Get your API key:
 
 ## 📋 Roadmap
 
-### ✅ Completed
+### ✅ Completed (v1.2.0)
 - [x] Core note-taking functionality
 - [x] AI-powered text tools
-- [x] Resizable AI chat sidebar
+- [x] Resizable AI chat sidebar with dotted canvas
+- [x] Action buttons on AI responses
 - [x] Command palette
 - [x] Focus mode
 - [x] Voice input
@@ -156,6 +159,8 @@ Get your API key:
 - [x] PWA support
 - [x] Dark mode
 - [x] Search & favorites
+- [x] Thin scrollbars (4px)
+- [x] Always-visible logo toggle
 
 ### 🔜 Next Steps
 - [ ] Cloud sync & backup
