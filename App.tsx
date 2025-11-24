@@ -1536,12 +1536,71 @@ const EditorWorkspace = () => {
               )}
               {chatMessages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] p-3 rounded-2xl ${
+                  <div className={`max-w-[85%] ${
                     msg.role === 'user' 
-                      ? 'bg-emerald-500 text-white' 
-                      : 'bg-gray-100 dark:bg-[#1A1A1A] text-gray-900 dark:text-white border border-gray-200 dark:border-[#222]'
+                      ? 'bg-emerald-500 text-white p-3 rounded-2xl' 
+                      : 'bg-gray-100 dark:bg-[#1A1A1A] text-gray-900 dark:text-white border border-gray-200 dark:border-[#222] rounded-2xl overflow-hidden'
                   }`}>
-                    <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                    {msg.role === 'assistant' && (
+                      <div className="px-3 pt-3 pb-2 border-b border-gray-200 dark:border-[#333]">
+                        <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                          <Sparkles className="w-3 h-3" /> AI Analysis
+                        </div>
+                      </div>
+                    )}
+                    <div className={msg.role === 'assistant' ? 'p-3' : ''}>
+                      <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                    </div>
+                    {msg.role === 'assistant' && msg.content && !isChatGenerating && (
+                      <div className="flex gap-2 justify-end px-3 pb-3 pt-2 border-t border-gray-200 dark:border-[#333]">
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          onClick={() => {
+                            setChatMessages(prev => prev.filter((_, idx) => idx !== i));
+                          }}
+                          className="h-7 text-xs"
+                        >
+                          Discard
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          onClick={() => {
+                            navigator.clipboard.writeText(msg.content);
+                          }} 
+                          className="h-7 text-xs"
+                        >
+                          <Copy className="w-3 h-3 mr-1" /> Copy
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="secondary" 
+                          onClick={() => {
+                            addNote();
+                            setTimeout(() => {
+                              const newNote = notes[0];
+                              updateNote(newNote.id, { title: 'AI Generated Note', content: msg.content });
+                              setActiveNoteId(newNote.id);
+                            }, 100);
+                          }} 
+                          className="h-7 text-xs"
+                        >
+                          <Plus className="w-3 h-3 mr-1" /> New Note
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          className="bg-purple-600 hover:bg-purple-700 h-7 text-xs" 
+                          onClick={() => {
+                            if (activeNote) {
+                              updateNote(activeNote.id, { content: editorContent + '\n\n' + msg.content });
+                            }
+                          }}
+                        >
+                          Insert
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
