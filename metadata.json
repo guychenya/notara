@@ -1,5 +1,5 @@
 {
-  "name": "Lumen Notes AI",
+  "name": "Notara",
   "description": "A privacy-first, local-first note taking application with AI capabilities.",
   "requestFramePermissions": [
     "microphone"

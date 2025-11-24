@@ -1,4 +1,4 @@
-# Lumen Notes AI - Project Report
+# Notara - Project Report
 
 **Report Date:** November 24, 2025  
 **Project:** AI-Powered Notes Application  
@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-Lumen Notes AI is a React-based intelligent note-taking application that integrates multiple AI providers for enhanced productivity. The application supports real-time AI assistance, voice interaction, and rich text editing capabilities.
+Notara is a React-based intelligent note-taking application that integrates multiple AI providers for enhanced productivity. The application supports real-time AI assistance, voice interaction, and rich text editing capabilities.
 
 ---
 
@@ -189,4 +189,4 @@ Custom hook (`useLocalStorage.ts`) provides persistent state management across s
 
 ## Conclusion
 
-Lumen Notes AI provides a solid foundation for AI-enhanced note-taking with a modular architecture that supports multiple AI providers and rich editing capabilities. The TypeScript implementation ensures type safety, while the React-based architecture enables maintainable and scalable development.
+Notara provides a solid foundation for AI-enhanced note-taking with a modular architecture that supports multiple AI providers and rich editing capabilities. The TypeScript implementation ensures type safety, while the React-based architecture enables maintainable and scalable development.
