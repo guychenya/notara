@@ -703,15 +703,14 @@ const EditorWorkspace = () => {
                 <Button size="sm" variant="secondary" onClick={() => handleAIAction("Fix grammar and improve tone")}>
                     <PenLine className="w-3 h-3 mr-2 text-blue-500 dark:text-blue-400" /> Improve
                 </Button>
+                <Button 
+                    onClick={() => setIsVoiceModeOpen(true)} 
+                    size="sm"
+                    variant="secondary"
+                >
+                    <Mic className="w-3 h-3 mr-2 text-purple-500 dark:text-purple-400" /> Voice Mode
+                </Button>
             </div>
-
-            <Button 
-                onClick={() => setIsVoiceModeOpen(true)} 
-                className="bg-emerald-100 text-emerald-700 border border-emerald-200 hover:bg-emerald-200 dark:bg-emerald-600/20 dark:text-emerald-400 dark:border-emerald-600/50 dark:hover:bg-emerald-600/30"
-                size="sm"
-            >
-                <Mic className="w-4 h-4 mr-2" /> Voice Mode
-            </Button>
         </div>
 
         {/* Split Editor Area */}
