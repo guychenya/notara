@@ -1020,6 +1020,13 @@ const EditorWorkspace = () => {
                   >
                     <Languages className="w-3 h-3" /> Trans
                   </button>
+                  <button
+                    onClick={() => handleSelectionAI("Extract all action items and tasks", false)}
+                    className="px-2 py-1 text-xs hover:bg-gray-700 rounded flex items-center gap-1"
+                    title="Extract action items"
+                  >
+                    <CheckCircle className="w-3 h-3" /> Actions
+                  </button>
                   <div className="w-px h-4 bg-gray-600 mx-1"></div>
                   <button
                     onClick={() => handleSelectionAI("Rewrite this text", true)}
