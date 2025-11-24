@@ -15,7 +15,7 @@ import {
   Bold, Italic, List, PenLine, Trash2, Edit2, Image as ImageIcon, 
   Table as TableIcon, Download, Upload, File, FileCode, Printer, ChevronDown, Mic,
   Heading1, Heading2, Heading3, ListOrdered, CheckSquare, Quote, Code, Minus, Video, Type,
-  Eye, Columns, Moon, Sun
+  Eye, Columns, Moon, Sun, Menu, X
 } from 'lucide-react';
 
 // Helper to calculate caret coordinates in a textarea
@@ -71,6 +71,7 @@ const EditorWorkspace = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const [isVoiceModeOpen, setIsVoiceModeOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
   // View Mode & Resizing State
   const [viewMode, setViewMode] = useState<ViewMode>('split');
@@ -508,6 +509,7 @@ const EditorWorkspace = () => {
     <div className="flex min-h-screen bg-white dark:bg-[#0F0F0F] text-gray-800 dark:text-gray-100 font-sans overflow-hidden">
       
       {/* Sidebar */}
+      {isSidebarOpen && (
       <div className="w-64 bg-gray-50 dark:bg-[#111111] border-r border-gray-200 dark:border-[#222] flex flex-col min-w-[250px] shrink-0 print:hidden z-20">
         <div className="p-4 border-b border-gray-200 dark:border-[#222]">
           <div className="flex items-center gap-2 text-emerald-500 font-bold text-xl tracking-tight">
@@ -572,6 +574,7 @@ const EditorWorkspace = () => {
            </div>
         </div>
       </div>
+      )}
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 relative h-screen">
@@ -579,6 +582,14 @@ const EditorWorkspace = () => {
         {/* Header */}
         <header className="h-14 border-b border-gray-200 dark:border-[#222] bg-gray-50 dark:bg-[#111111] flex items-center justify-between px-6 shrink-0 print:hidden z-20">
            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 w-full mr-4">
+             <Button
+               variant="ghost"
+               size="sm"
+               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+               className="mr-2"
+             >
+               {isSidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+             </Button>
               <span className="hidden sm:inline shrink-0">My Workspace</span>
               <ChevronRight className="w-4 h-4 hidden sm:inline shrink-0" />
               <input 
