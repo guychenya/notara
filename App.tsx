@@ -15,7 +15,8 @@ import {
   Bold, Italic, List, PenLine, Trash2, Edit2, Image as ImageIcon, 
   Table as TableIcon, Download, Upload, File, FileCode, Printer, ChevronDown, Mic,
   Heading1, Heading2, Heading3, ListOrdered, CheckSquare, Quote, Code, Minus, Video, Type,
-  Eye, Columns, Moon, Sun, Menu, X
+  Eye, Columns, Moon, Sun, Menu, X, Languages, Lightbulb, ArrowRight, Maximize2, Minimize2,
+  CheckCircle, Search, Star, Copy, Clock, Folder, Tag, Share2, History, Wand2
 } from 'lucide-react';
 
 // Helper to calculate caret coordinates in a textarea
@@ -72,6 +73,8 @@ const EditorWorkspace = () => {
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const [isVoiceModeOpen, setIsVoiceModeOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
   
   // View Mode & Resizing State
   const [viewMode, setViewMode] = useState<ViewMode>('split');
@@ -512,15 +515,28 @@ const EditorWorkspace = () => {
       {isSidebarOpen && (
       <div className="w-64 bg-gray-50 dark:bg-[#111111] border-r border-gray-200 dark:border-[#222] flex flex-col min-w-[250px] shrink-0 print:hidden z-20">
         <div className="p-4 border-b border-gray-200 dark:border-[#222]">
-          <div className="flex items-center gap-2 text-emerald-500 font-bold text-xl tracking-tight">
+          <div className="flex items-center gap-2 text-emerald-500 font-bold text-xl tracking-tight mb-3">
             <Zap className="w-5 h-5 fill-current" />
             <span>Lumen</span>
+          </div>
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search notes..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 text-sm bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#333] rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-600"
+            />
           </div>
         </div>
         
         <div className="flex-1 p-3 space-y-1 overflow-y-auto custom-scrollbar">
            <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wider">Notes</div>
-           {notes.map(note => (
+           {notes.filter(note => 
+             note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+             note.content.toLowerCase().includes(searchQuery.toLowerCase())
+           ).map(note => (
                <div key={note.id} className="relative group flex items-center">
                     <button 
                         onClick={() => setActiveNoteId(note.id)}
@@ -530,16 +546,40 @@ const EditorWorkspace = () => {
                             : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#1A1A1A] hover:text-gray-700 dark:hover:text-gray-200'
                         }`}
                     >
+                        {favorites.has(note.id) && <Star className="w-3 h-3 fill-yellow-400 text-yellow-400 shrink-0" />}
                         <FileText className={`w-4 h-4 shrink-0 ${activeNoteId === note.id ? 'text-emerald-500' : 'text-gray-500 dark:text-gray-500'}`} />
                         <span className="truncate flex-1">{note.title || "Untitled Note"}</span>
                     </button>
                     <div className="absolute right-2 top-0 bottom-0 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <button 
+                            onClick={() => {
+                              const newFavs = new Set(favorites);
+                              if (newFavs.has(note.id)) newFavs.delete(note.id);
+                              else newFavs.add(note.id);
+                              setFavorites(newFavs);
+                            }}
+                            className="p-1 text-gray-500 dark:text-gray-400 hover:text-yellow-500 dark:hover:text-yellow-400 hover:bg-gray-200 dark:hover:bg-[#2A2A2A] rounded"
+                            title={favorites.has(note.id) ? "Remove from favorites" : "Add to favorites"}
+                        >
+                            <Star className={`w-3 h-3 ${favorites.has(note.id) ? 'fill-yellow-400 text-yellow-400' : ''}`} />
+                        </button>
                         <button 
                             onClick={() => handleRenameClick(note.id)}
                             className="p-1 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-200 dark:hover:bg-[#2A2A2A] rounded"
                             title="Rename note"
                         >
                             <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button 
+                            onClick={() => {
+                              const newNote = { ...note, id: Date.now().toString(), title: note.title + ' (Copy)', updatedAt: Date.now() };
+                              addNote();
+                              setTimeout(() => updateNote(notes[0].id, newNote), 100);
+                            }}
+                            className="p-1 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-500/10 rounded"
+                            title="Duplicate note"
+                        >
+                            <Copy className="w-3.5 h-3.5" />
                         </button>
                         <button 
                             onClick={() => handleDeleteClick(note.id)}
@@ -598,6 +638,18 @@ const EditorWorkspace = () => {
                 onChange={(e) => activeNote && updateNote(activeNote.id, { title: e.target.value })}
                 placeholder="Untitled Note"
               />
+              {activeNote && (
+                <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 ml-4">
+                  <span className="flex items-center gap-1">
+                    <Type className="w-3 h-3" />
+                    {activeNote.content.split(/\s+/).filter(w => w.length > 0).length} words
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {new Date(activeNote.updatedAt).toLocaleDateString()}
+                  </span>
+                </div>
+              )}
            </div>
 
            <div className="flex items-center gap-3 shrink-0">
@@ -697,11 +749,32 @@ const EditorWorkspace = () => {
         <div className="h-12 border-b border-gray-200 dark:border-[#222] bg-gray-100 dark:bg-[#161616] flex items-center px-6 gap-2 overflow-x-auto no-scrollbar shrink-0 print:hidden z-10">
             <div className="flex items-center gap-2 whitespace-nowrap flex-1">
                 <span className="text-xs font-medium text-emerald-600 dark:text-emerald-500 uppercase tracking-wider ml-2 mr-1">AI Tools</span>
-                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Summarize this note")}>
+                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Summarize this note in bullet points")}>
                     <Sparkles className="w-3 h-3 mr-2 text-emerald-500 dark:text-emerald-400" /> Summarize
                 </Button>
                 <Button size="sm" variant="secondary" onClick={() => handleAIAction("Fix grammar and improve tone")}>
                     <PenLine className="w-3 h-3 mr-2 text-blue-500 dark:text-blue-400" /> Improve
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Explain this in simple terms")}>
+                    <Lightbulb className="w-3 h-3 mr-2 text-yellow-500 dark:text-yellow-400" /> Explain
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Continue writing from where this text ends")}>
+                    <ArrowRight className="w-3 h-3 mr-2 text-indigo-500 dark:text-indigo-400" /> Continue
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Expand this text with more details")}>
+                    <Maximize2 className="w-3 h-3 mr-2 text-green-500 dark:text-green-400" /> Expand
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Make this text shorter and more concise")}>
+                    <Minimize2 className="w-3 h-3 mr-2 text-orange-500 dark:text-orange-400" /> Shorten
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Convert this to bullet points")}>
+                    <List className="w-3 h-3 mr-2 text-pink-500 dark:text-pink-400" /> Bullets
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Extract all action items and tasks from this text")}>
+                    <CheckCircle className="w-3 h-3 mr-2 text-teal-500 dark:text-teal-400" /> Actions
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Translate this to Spanish")}>
+                    <Languages className="w-3 h-3 mr-2 text-red-500 dark:text-red-400" /> Translate
                 </Button>
                 <Button 
                     onClick={() => setIsVoiceModeOpen(true)} 
