@@ -1,12 +1,19 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+
+# 📝 Notara
+
+**AI-Powered Note-Taking, Reimagined**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](https://opensource.org/licenses/MIT)
+[![Made with React](https://img.shields.io/badge/Made%20with-React-61DAFB?logo=react)](https://reactjs.org/)
+
 </div>
 
-# Run and deploy your AI Studio app
+---
 
-This contains everything you need to run your app locally.
+## ✨ About Notara
 
-View your app in AI Studio: https://ai.studio/apps/drive/1MttTZBYk-JEI6JGa2lPTPIOlFUTDeQrp
+Notara is an intelligent note-taking application that combines the simplicity of markdown with the power of AI. Create, organize, and enhance your notes with multiple AI providers including Gemini, OpenAI, Anthropic, Ollama, and more.
 
 ## Run Locally
 
