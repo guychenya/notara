@@ -397,28 +397,31 @@ const EditorWorkspace = () => {
   ];
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Intercept navigation when slash menu is open
+    // Only intercept keys when slash menu is open AND visible
     if (slashMenuOpen) {
-        if (['ArrowUp', 'ArrowDown', 'Enter', 'Escape'].includes(e.key)) {
+        if (['ArrowUp', 'ArrowDown', 'Escape'].includes(e.key)) {
             e.preventDefault(); 
-            // The SlashCommandMenu component handles the logic via window listeners
             return;
         }
-        // If any other character is typed, close the menu.
-        // This prevents the menu from getting "stuck" and blocking the Enter key.
-        if (!e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1) {
+        // Enter key selects command from slash menu
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            return;
+        }
+        // If any other character is typed, close the menu
+        if (!e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1 && e.key !== '/') {
             setSlashMenuOpen(false);
         }
     }
 
-    if (e.key === '/') {
-        // Calculate position for menu
+    // Open slash menu on '/' key
+    if (e.key === '/' && !slashMenuOpen) {
         if (textareaRef.current) {
             const pos = textareaRef.current.selectionStart;
             const coords = getCaretCoordinates(textareaRef.current, pos);
             
             setSlashMenuPos({
-                top: coords.top + 24, // Slight offset below cursor
+                top: coords.top + 24,
                 left: coords.left
             });
             setSlashMenuOpen(true);
