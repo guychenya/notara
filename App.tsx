@@ -7,9 +7,11 @@ import { Button } from './components/ui/Button';
 import { LLMService } from './services/llmService';
 import { htmlToMarkdown } from './services/converter';
 import { parseMarkdown } from './services/markdown';
+import { TableOfContents } from './components/TableOfContents';
 import { SlashCommandMenu, type SlashCommand } from './components/SlashCommandMenu';
 import { VoiceModeModal } from './components/VoiceModeModal';
 import { ChatMessage } from './types';
+import 'highlight.js/styles/github-dark.css';
 import { 
   Settings, Sparkles, Plus, FileText, ChevronRight, MoreHorizontal, Zap,
   Bold, Italic, List, PenLine, Trash2, Edit2, Image as ImageIcon, 
@@ -1230,15 +1232,26 @@ const EditorWorkspace = () => {
                    id="preview-pane"
                    style={{ 
                        width: viewMode === 'split' ? `${100 - splitPos}%` : viewMode === 'preview' ? '100%' : '0%',
-                       display: viewMode === 'edit' ? 'none' : 'block',
-                       pointerEvents: isDragging ? 'none' : 'auto' // Prevent iframe interference while dragging
+                       display: viewMode === 'edit' ? 'none' : 'flex',
+                       pointerEvents: isDragging ? 'none' : 'auto'
                    }}
                    className={`h-full overflow-y-auto custom-scrollbar ${theme === 'light' ? 'bg-dotted-pattern-light' : 'bg-dotted-pattern-dark'}`}
                >
-                    <div 
-                        className={`prose ${theme === 'dark' ? 'dark:prose-invert' : ''} max-w-none p-8`}
-                        dangerouslySetInnerHTML={{ __html: parseMarkdown(activeNote.content) }}
-                    />
+                    <div className="flex-1 max-w-4xl">
+                        <div 
+                            className={`prose ${theme === 'dark' ? 'dark:prose-invert' : ''} max-w-none p-8`}
+                            dangerouslySetInnerHTML={{ __html: parseMarkdown(activeNote.content, notes) }}
+                            onClick={(e) => {
+                              const target = e.target as HTMLElement;
+                              if (target.classList.contains('wiki-link')) {
+                                e.preventDefault();
+                                const noteId = target.dataset.noteId;
+                                if (noteId) setActiveNoteId(noteId);
+                              }
+                            }}
+                        />
+                    </div>
+                    <TableOfContents content={activeNote.content} />
                </div>
              </>
            ) : (

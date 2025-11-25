@@ -1,23 +1,37 @@
+import hljs from 'highlight.js';
 
+let headingIndex = 0;
 
-export const parseMarkdown = (text: string): string => {
+export const resetHeadingIndex = () => {
+  headingIndex = 0;
+};
+
+export const parseMarkdown = (text: string, allNotes?: Array<{ id: string; title: string }>): string => {
   if (!text) return '';
+  
+  resetHeadingIndex();
 
   let html = text;
   const references: Record<string, string> = {};
 
+  // Process wiki-style links [[Note Title]] BEFORE sanitization
+  if (allNotes) {
+    html = html.replace(/\[\[([^\]]+)\]\]/g, (match, noteTitle) => {
+      const note = allNotes.find(n => n.title.toLowerCase() === noteTitle.toLowerCase());
+      if (note) {
+        return `__WIKILINK__${note.id}__${noteTitle}__ENDWIKI__`;
+      }
+      return `__WIKIMISSING__${noteTitle}__ENDMISSING__`;
+    });
+  }
+
   // 1. Extract Reference Definitions: [id]: url
-  // This regex matches definitions starting at a new line.
-  // We remove them from the visual output so they don't clutter the preview.
   html = html.replace(/^\[([^\]]+)\]:\s*(\S+).*$/gm, (match, id, url) => {
       references[id.toLowerCase()] = url;
-      return ''; // Eat the definition from the output
+      return '';
   });
 
-  // 2. Basic sanitization (prevent script/onclick but allow structural HTML)
-  // We'll temporarily protect known safe complex tags (iframe, video, details, and their wrappers)
-  
-  // Protect Videos/Iframes and their wrappers
+  // 2. Protect Videos/Iframes and their wrappers
   const protectionRegex = /(<div class="aspect-video[^"]*">[\s\S]*?(?:<iframe|<video)[\s\S]*?(?:<\/iframe>|<\/video>)[\s\S]*?<\/div>|<iframe[\s\S]*?<\/iframe>|<video[\s\S]*?<\/video>|<details[\s\S]*?<\/details>)/gim;
   
   const replacements: { id: string, val: string }[] = [];
@@ -39,10 +53,19 @@ export const parseMarkdown = (text: string): string => {
       html = html.replace(rep.id, rep.val);
   });
 
-  // Headers
-  html = html.replace(/^### (.*$)/gim, '<h3 class="text-xl font-bold mt-4 mb-2 text-emerald-400">$1</h3>');
-  html = html.replace(/^## (.*$)/gim, '<h2 class="text-2xl font-bold mt-6 mb-3 text-emerald-500">$1</h2>');
-  html = html.replace(/^# (.*$)/gim, '<h1 class="text-3xl font-bold mt-8 mb-4 text-emerald-600">$1</h1>');
+  // Headers with IDs for TOC
+  html = html.replace(/^### (.*$)/gim, () => {
+    const id = `heading-${headingIndex++}`;
+    return `<h3 id="${id}" class="text-xl font-bold mt-4 mb-2 text-emerald-400">$1</h3>`;
+  });
+  html = html.replace(/^## (.*$)/gim, () => {
+    const id = `heading-${headingIndex++}`;
+    return `<h2 id="${id}" class="text-2xl font-bold mt-6 mb-3 text-emerald-500">$1</h2>`;
+  });
+  html = html.replace(/^# (.*$)/gim, () => {
+    const id = `heading-${headingIndex++}`;
+    return `<h1 id="${id}" class="text-3xl font-bold mt-8 mb-4 text-emerald-600">$1</h1>`;
+  });
 
   // Bold & Italic
   html = html.replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>');
@@ -57,7 +80,7 @@ export const parseMarkdown = (text: string): string => {
       if (url) {
           return `<img src="${url}" alt="${alt}" class="rounded-lg max-w-full my-4 border border-[#333]" />`;
       }
-      return match; // Return original string if ref not found
+      return match;
   });
 
   // Links: [text](url) - Inline Style
@@ -88,8 +111,38 @@ export const parseMarkdown = (text: string): string => {
   // Wrap consecutive lis in ul
   html = html.replace(/((<li.*>.*<\/li>\n?)+)/gim, '<ul class="my-4 space-y-1">$1</ul>');
 
-  // Code Blocks
-  html = html.replace(/```([\s\S]*?)```/gim, '<pre class="bg-[#1A1A1A] p-4 rounded-lg border border-[#333] overflow-x-auto my-4 font-mono text-sm text-gray-300">$1</pre>');
+  // Code Blocks with syntax highlighting
+  html = html.replace(/```(\w+)?\n([\s\S]*?)```/gim, (match, lang, code) => {
+    const language = lang || 'plaintext';
+    let highlighted = code;
+    
+    try {
+      if (lang && hljs.getLanguage(lang)) {
+        highlighted = hljs.highlight(code, { language: lang }).value;
+      } else {
+        highlighted = hljs.highlightAuto(code).value;
+      }
+    } catch (e) {
+      console.error('Highlight error:', e);
+    }
+
+    const escapedCode = code.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    
+    return `
+      <div class="code-block-wrapper my-4">
+        <div class="code-block-header flex items-center justify-between bg-[#0d0d0d] px-4 py-2 border-b border-[#333] rounded-t-lg">
+          <span class="code-block-lang text-xs text-gray-400 font-mono">${language}</span>
+          <button class="code-block-copy text-xs text-gray-400 hover:text-emerald-400 transition-colors flex items-center gap-1" onclick="navigator.clipboard.writeText(this.dataset.code).then(() => { this.textContent = 'Copied!'; setTimeout(() => this.innerHTML = '<svg class=\\'w-3 h-3\\' fill=\\'none\\' stroke=\\'currentColor\\' viewBox=\\'0 0 24 24\\'><path stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\' stroke-width=\\'2\\' d=\\'M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z\\'></path></svg> Copy', 2000); })" data-code="${escapedCode}">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+            </svg>
+            Copy
+          </button>
+        </div>
+        <pre class="bg-[#1A1A1A] p-4 rounded-b-lg border border-[#333] border-t-0 overflow-x-auto"><code class="hljs language-${language} text-sm">${highlighted}</code></pre>
+      </div>
+    `;
+  });
 
   // Inline Code
   html = html.replace(/`([^`]+)`/gim, '<code class="bg-[#222] px-1.5 py-0.5 rounded text-emerald-300 font-mono text-sm">$1</code>');
@@ -105,6 +158,10 @@ export const parseMarkdown = (text: string): string => {
       
       return `<div class="overflow-x-auto my-6 rounded-lg border border-[#333]"><table class="w-full text-sm border-collapse"><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table></div>`;
   });
+
+  // Restore wiki links
+  html = html.replace(/__WIKILINK__([^_]+)__([^_]+)__ENDWIKI__/g, '<a href="#" class="wiki-link text-emerald-400 hover:text-emerald-300 underline decoration-dotted" data-note-id="$1">$2</a>');
+  html = html.replace(/__WIKIMISSING__([^_]+)__ENDMISSING__/g, '<span class="wiki-link-missing text-gray-500 italic">$1</span>');
 
   // Paragraphs
   const lines = html.split('\n');
