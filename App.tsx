@@ -260,23 +260,23 @@ const EditorWorkspace = () => {
 
   // Helper to insert text at cursor
   const insertTextAtCursor = (text: string, cursorOffset = 0) => {
-      if (!textareaRef.current) return;
+      if (!textareaRef.current || !activeNote) return;
       
       const start = textareaRef.current.selectionStart;
       const end = textareaRef.current.selectionEnd;
-      const currentVal = textareaRef.current.value;
+      const currentVal = activeNote.content;
       
       const newVal = currentVal.substring(0, start) + text + currentVal.substring(end);
       
-      handleContentChange(newVal);
+      updateNote(activeNote.id, { content: newVal });
       
       // Reset cursor position
-      setTimeout(() => {
+      requestAnimationFrame(() => {
           if (textareaRef.current) {
               textareaRef.current.focus();
               textareaRef.current.setSelectionRange(start + text.length + cursorOffset, start + text.length + cursorOffset);
           }
-      }, 0);
+      });
   };
 
   const insertVideoBlock = () => {
@@ -457,16 +457,25 @@ const EditorWorkspace = () => {
     const beforeSlash = val.substring(0, slashPos);
     const afterSlash = val.substring(cursorPos);
     
-    handleContentChange(beforeSlash + afterSlash);
+    const newContent = beforeSlash + afterSlash;
+    
+    // Update content first
+    if (activeNote) {
+      updateNote(activeNote.id, { content: newContent });
+    }
 
-    // Set cursor position and execute command
-    setTimeout(() => {
+    // Wait for React to update, then set cursor and execute
+    requestAnimationFrame(() => {
       if (textareaRef.current) {
         textareaRef.current.focus();
         textareaRef.current.setSelectionRange(slashPos, slashPos);
-        command.action();
+        
+        // Execute command action after another frame to ensure cursor is set
+        requestAnimationFrame(() => {
+          command.action();
+        });
       }
-    }, 0);
+    });
     
     setSlashMenuOpen(false);
   };
