@@ -1279,6 +1279,9 @@ const EditorWorkspace = () => {
                     <Button size="sm" variant="secondary" onClick={() => handleAIAction("Translate this to Spanish")}>
                         <Languages className="w-3 h-3 mr-2 text-red-500 dark:text-red-400" /> Translate
                     </Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleAIAction("Format this document professionally with proper structure, headings, and presentation. Maintain all content but improve formatting and organization")}>
+                        <Wand2 className="w-3 h-3 mr-2 text-purple-500 dark:text-purple-400" /> Auto Format
+                    </Button>
                     <Button 
                         onClick={() => setIsVoiceModeOpen(true)} 
                         size="sm"
