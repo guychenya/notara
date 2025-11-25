@@ -94,6 +94,7 @@ const EditorWorkspace = () => {
   const [isResizing, setIsResizing] = useState(false);
   const [isChatGenerating, setIsChatGenerating] = useState(false);
   const [autoTags, setAutoTags] = useState<string[]>([]);
+  const [showAITools, setShowAITools] = useState(false);
   
   // Phase 4: PWA & Sharing
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -130,6 +131,18 @@ const EditorWorkspace = () => {
         renameTriggered.current = null;
     }
   }, [activeNoteId]);
+
+  // Auto-focus textarea when switching notes or creating new ones
+  useEffect(() => {
+    if (activeNote && textareaRef.current && !focusMode) {
+      setTimeout(() => {
+        textareaRef.current?.focus();
+        // Place cursor at end of content
+        const length = textareaRef.current?.value.length || 0;
+        textareaRef.current?.setSelectionRange(length, length);
+      }, 100);
+    }
+  }, [activeNoteId, focusMode]);
 
   // Command Palette keyboard shortcut (Cmd+K / Ctrl+K)
   useEffect(() => {
@@ -1125,44 +1138,55 @@ const EditorWorkspace = () => {
 
         {/* Toolbar */}
         {!focusMode && (
-        <div className="h-12 border-b border-gray-200 dark:border-[#222] bg-gray-100 dark:bg-[#161616] flex items-center px-6 gap-2 overflow-x-auto no-scrollbar shrink-0 print:hidden z-10">
-            <div className="flex items-center gap-2 whitespace-nowrap flex-1">
-                <span className="text-xs font-medium text-emerald-600 dark:text-emerald-500 uppercase tracking-wider ml-2 mr-1">AI Tools</span>
-                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Summarize this note in bullet points")}>
-                    <Sparkles className="w-3 h-3 mr-2 text-emerald-500 dark:text-emerald-400" /> Summarize
-                </Button>
-                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Fix grammar and improve tone")}>
-                    <PenLine className="w-3 h-3 mr-2 text-blue-500 dark:text-blue-400" /> Improve
-                </Button>
-                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Explain this in simple terms")}>
-                    <Lightbulb className="w-3 h-3 mr-2 text-yellow-500 dark:text-yellow-400" /> Explain
-                </Button>
-                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Continue writing from where this text ends")}>
-                    <ArrowRight className="w-3 h-3 mr-2 text-indigo-500 dark:text-indigo-400" /> Continue
-                </Button>
-                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Expand this text with more details")}>
-                    <Maximize2 className="w-3 h-3 mr-2 text-green-500 dark:text-green-400" /> Expand
-                </Button>
-                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Make this text shorter and more concise")}>
-                    <Minimize2 className="w-3 h-3 mr-2 text-orange-500 dark:text-orange-400" /> Shorten
-                </Button>
-                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Convert this to bullet points")}>
-                    <List className="w-3 h-3 mr-2 text-pink-500 dark:text-pink-400" /> Bullets
-                </Button>
-                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Extract all action items and tasks from this text")}>
-                    <CheckCircle className="w-3 h-3 mr-2 text-teal-500 dark:text-teal-400" /> Actions
-                </Button>
-                <Button size="sm" variant="secondary" onClick={() => handleAIAction("Translate this to Spanish")}>
-                    <Languages className="w-3 h-3 mr-2 text-red-500 dark:text-red-400" /> Translate
-                </Button>
-                <Button 
-                    onClick={() => setIsVoiceModeOpen(true)} 
-                    size="sm"
-                    variant="secondary"
+        <div className="border-b border-gray-200 dark:border-[#222] bg-gray-100 dark:bg-[#161616] shrink-0 print:hidden z-10">
+            <div className="h-12 flex items-center px-6 gap-2">
+                <button
+                    onClick={() => setShowAITools(!showAITools)}
+                    className="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-200 dark:hover:bg-[#222] rounded-lg transition-colors"
+                    title={showAITools ? "Hide AI Tools" : "Show AI Tools"}
                 >
-                    <Mic className="w-3 h-3 mr-2 text-purple-500 dark:text-purple-400" /> Voice Mode
-                </Button>
+                    <span className="text-xs font-medium text-emerald-600 dark:text-emerald-500 uppercase tracking-wider">AI Tools</span>
+                    <ChevronDown className={`w-4 h-4 text-emerald-600 dark:text-emerald-500 transition-transform ${showAITools ? 'rotate-180' : ''}`} />
+                </button>
             </div>
+            {showAITools && (
+                <div className="px-6 pb-3 flex items-center gap-2 overflow-x-auto no-scrollbar flex-wrap">
+                    <Button size="sm" variant="secondary" onClick={() => handleAIAction("Summarize this note in bullet points")}>
+                        <Sparkles className="w-3 h-3 mr-2 text-emerald-500 dark:text-emerald-400" /> Summarize
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleAIAction("Fix grammar and improve tone")}>
+                        <PenLine className="w-3 h-3 mr-2 text-blue-500 dark:text-blue-400" /> Improve
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleAIAction("Explain this in simple terms")}>
+                        <Lightbulb className="w-3 h-3 mr-2 text-yellow-500 dark:text-yellow-400" /> Explain
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleAIAction("Continue writing from where this text ends")}>
+                        <ArrowRight className="w-3 h-3 mr-2 text-indigo-500 dark:text-indigo-400" /> Continue
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleAIAction("Expand this text with more details")}>
+                        <Maximize2 className="w-3 h-3 mr-2 text-green-500 dark:text-green-400" /> Expand
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleAIAction("Make this text shorter and more concise")}>
+                        <Minimize2 className="w-3 h-3 mr-2 text-orange-500 dark:text-orange-400" /> Shorten
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleAIAction("Convert this to bullet points")}>
+                        <List className="w-3 h-3 mr-2 text-pink-500 dark:text-pink-400" /> Bullets
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleAIAction("Extract all action items and tasks from this text")}>
+                        <CheckCircle className="w-3 h-3 mr-2 text-teal-500 dark:text-teal-400" /> Actions
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleAIAction("Translate this to Spanish")}>
+                        <Languages className="w-3 h-3 mr-2 text-red-500 dark:text-red-400" /> Translate
+                    </Button>
+                    <Button 
+                        onClick={() => setIsVoiceModeOpen(true)} 
+                        size="sm"
+                        variant="secondary"
+                    >
+                        <Mic className="w-3 h-3 mr-2 text-purple-500 dark:text-purple-400" /> Voice Mode
+                    </Button>
+                </div>
+            )}
         </div>
         )}
 
