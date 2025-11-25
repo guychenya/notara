@@ -863,9 +863,17 @@ const EditorWorkspace = () => {
   return (
     <div className="flex min-h-screen bg-white dark:bg-[#0F0F0F] text-gray-800 dark:text-gray-100 font-sans overflow-hidden">
       
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && !focusMode && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       {isSidebarOpen && !focusMode && (
-      <div className="w-64 bg-gray-50 dark:bg-[#111111] border-r border-gray-200 dark:border-[#222] flex flex-col min-w-[250px] shrink-0 print:hidden z-20">
+      <div className="w-64 md:w-64 w-full md:relative fixed inset-y-0 left-0 bg-gray-50 dark:bg-[#111111] border-r border-gray-200 dark:border-[#222] flex flex-col min-w-[250px] shrink-0 print:hidden z-50 md:z-20">
         <div className="p-4 border-b border-gray-200 dark:border-[#222]">
           <div className="relative flex gap-2">
             <div className="relative flex-1">
@@ -1007,11 +1015,11 @@ const EditorWorkspace = () => {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 relative h-screen overflow-x-hidden" style={showAIChat ? { marginRight: `${aiPanelWidth}px` } : {}}>
+      <div className="flex-1 flex flex-col min-w-0 relative h-screen overflow-x-hidden" style={showAIChat && window.innerWidth >= 768 ? { marginRight: `${aiPanelWidth}px` } : {}}>
         
         {/* Header */}
         {!focusMode && (
-        <header className="h-14 border-b border-gray-200 dark:border-[#222] bg-gray-50 dark:bg-[#111111] flex items-center justify-between px-4 shrink-0 print:hidden z-20">
+        <header className="h-14 border-b border-gray-200 dark:border-[#222] bg-gray-50 dark:bg-[#111111] flex items-center justify-between px-2 md:px-4 shrink-0 print:hidden z-20">
            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 w-full mr-4">
              <button
                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -1289,7 +1297,7 @@ const EditorWorkspace = () => {
                >
                  <textarea 
                     ref={textareaRef}
-                    className="flex-1 w-full bg-transparent text-gray-700 dark:text-gray-300 font-mono text-sm p-6 pb-96 resize-none focus:outline-none custom-scrollbar leading-relaxed break-words whitespace-pre-wrap"
+                    className="flex-1 w-full bg-transparent text-gray-700 dark:text-gray-300 font-mono text-sm p-3 md:p-6 pb-96 resize-none focus:outline-none custom-scrollbar leading-relaxed break-words whitespace-pre-wrap"
                     placeholder="# Start typing your note here... (Type / for commands)"
                     value={editorContent}
                     onChange={(e) => handleContentChange(e.target.value)}
@@ -1639,9 +1647,9 @@ const EditorWorkspace = () => {
         {/* AI Chat Sidebar - Resizable */}
         {showAIChat && (
           <div 
-            className="fixed right-0 top-0 bottom-0 bg-gray-50 dark:bg-[#0F0F0F] border-l border-gray-200 dark:border-[#222] flex flex-col z-40 shadow-2xl"
+            className="fixed md:fixed right-0 top-0 bottom-0 bg-gray-50 dark:bg-[#0F0F0F] border-l border-gray-200 dark:border-[#222] flex flex-col z-40 shadow-2xl w-full md:w-auto"
             style={{ 
-              width: `${aiPanelWidth}px`,
+              width: window.innerWidth >= 768 ? `${aiPanelWidth}px` : '100%',
               backgroundImage: theme === 'dark' 
                 ? 'radial-gradient(#333 1px, transparent 1px)' 
                 : 'radial-gradient(#E5E7EB 1px, transparent 1px)',
