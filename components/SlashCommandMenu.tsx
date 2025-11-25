@@ -29,6 +29,14 @@ export const SlashCommandMenu: React.FC<Props> = ({ isOpen, position, commands, 
     }
   }, [isOpen]);
 
+  // Filter commands based on search query - MUST be before useEffect that uses it
+  const filteredCommands = searchQuery
+    ? commands.filter(cmd => 
+        cmd.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        cmd.description.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : commands;
+
   // FIX: Added a click-outside handler to ensure the menu closes properly.
   // This prevents a bug where the menu state could get stuck as "open",
   // which would block the "Enter" key in the main editor.
@@ -80,15 +88,7 @@ export const SlashCommandMenu: React.FC<Props> = ({ isOpen, position, commands, 
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, selectedIndex, onSelect, onClose, searchQuery]);
-
-  // Filter commands based on search query
-  const filteredCommands = searchQuery
-    ? commands.filter(cmd => 
-        cmd.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        cmd.description.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : commands;
+  }, [isOpen, selectedIndex, onSelect, onClose, searchQuery, filteredCommands]);
 
   useEffect(() => {
     if (scrollContainerRef.current) {
