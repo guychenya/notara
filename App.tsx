@@ -1757,12 +1757,7 @@ const EditorWorkspace = () => {
                           size="sm" 
                           variant="secondary" 
                           onClick={() => {
-                            addNote();
-                            setTimeout(() => {
-                              const newNote = notes[0];
-                              updateNote(newNote.id, { title: 'AI Generated Note', content: msg.content });
-                              setActiveNoteId(newNote.id);
-                            }, 100);
+                            importNote('AI Generated Note', msg.content);
                           }} 
                           className="h-7 text-xs"
                         >
@@ -1772,8 +1767,20 @@ const EditorWorkspace = () => {
                           size="sm" 
                           className="bg-purple-600 hover:bg-purple-700 h-7 text-xs" 
                           onClick={() => {
-                            if (activeNote) {
-                              updateNote(activeNote.id, { content: editorContent + '\n\n' + msg.content });
+                            if (activeNote && textareaRef.current) {
+                              const start = textareaRef.current.selectionStart;
+                              const end = textareaRef.current.selectionEnd;
+                              const currentContent = activeNote.content;
+                              const newContent = currentContent.substring(0, start) + '\n\n' + msg.content + '\n\n' + currentContent.substring(end);
+                              updateNote(activeNote.id, { content: newContent });
+                              
+                              setTimeout(() => {
+                                if (textareaRef.current) {
+                                  const newPosition = start + msg.content.length + 4;
+                                  textareaRef.current.focus();
+                                  textareaRef.current.setSelectionRange(newPosition, newPosition);
+                                }
+                              }, 50);
                             }
                           }}
                         >
