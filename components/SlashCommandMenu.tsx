@@ -44,6 +44,13 @@ export const SlashCommandMenu: React.FC<Props> = ({ isOpen, position, commands, 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
 
+      // Only handle if the menu is actually visible and not if focus is in textarea
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'TEXTAREA' && e.key === 'Enter') {
+        // Let textarea handle Enter normally
+        return;
+      }
+
       if (e.key === 'ArrowDown') {
         e.preventDefault();
         e.stopPropagation();
@@ -63,8 +70,8 @@ export const SlashCommandMenu: React.FC<Props> = ({ isOpen, position, commands, 
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown, { capture: true });
-    return () => window.removeEventListener('keydown', handleKeyDown, { capture: true });
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, selectedIndex, onSelect, onClose, commands]);
 
   useEffect(() => {

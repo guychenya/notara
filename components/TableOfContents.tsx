@@ -17,19 +17,30 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({ content }) => 
   useEffect(() => {
     const lines = content.split('\n');
     const extracted: Heading[] = [];
+    let headingCount = 0;
     
-    lines.forEach((line, index) => {
+    lines.forEach((line) => {
       const match = line.match(/^(#{1,6})\s+(.+)$/);
       if (match) {
         const level = match[1].length;
         const text = match[2].trim();
-        const id = `heading-${index}`;
+        const id = `heading-${headingCount}`;
         extracted.push({ id, text, level });
+        headingCount++;
       }
     });
     
     setHeadings(extracted);
   }, [content]);
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveId(id);
+    }
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -64,7 +75,8 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({ content }) => 
             <a
               key={heading.id}
               href={`#${heading.id}`}
-              className={`block text-sm transition-colors ${
+              onClick={(e) => handleClick(e, heading.id)}
+              className={`block text-sm transition-colors cursor-pointer ${
                 activeId === heading.id
                   ? 'text-emerald-600 dark:text-emerald-400 font-medium'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
