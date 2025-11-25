@@ -712,13 +712,6 @@ const EditorWorkspace = () => {
     exportAsObsidianVault(notes);
     alert(`Exporting ${notes.length} notes as Obsidian vault...`);
   };
-        
-        importNote(title, content);
-    };
-    reader.readAsText(file);
-    // Reset file input
-    e.target.value = '';
-  };
 
   // --- AI Actions ---
   const handleAIAction = async (promptPrefix: string) => {
