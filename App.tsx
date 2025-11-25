@@ -104,7 +104,6 @@ const EditorWorkspace = () => {
   const [aiPanelWidth, setAiPanelWidth] = useState(400);
   const [isResizing, setIsResizing] = useState(false);
   const [isChatGenerating, setIsChatGenerating] = useState(false);
-  const [autoTags, setAutoTags] = useState<string[]>([]);
   const [showAITools, setShowAITools] = useState(false);
   
   // Phase 4: PWA & Sharing
@@ -595,6 +594,7 @@ const EditorWorkspace = () => {
 
   const generateAutoTags = async () => {
     if (!activeNote?.content) return;
+    if (activeNote.tags && activeNote.tags.length > 0) return; // Don't regenerate if tags exist
     
     const service = new LLMService(config);
     const prompt = `Analyze this note and suggest 3-5 relevant tags (single words or short phrases). Output ONLY the tags separated by commas, nothing else:\n\n${activeNote.content}`;
@@ -615,7 +615,9 @@ const EditorWorkspace = () => {
         .map(t => t.trim())
         .filter(t => t.length > 0 && t.length < 30)
         .slice(0, 5);
-      setAutoTags(tags);
+      
+      // Save tags to the note
+      updateNote(activeNote.id, { tags });
     } catch (e) {
       console.error('Auto-tag error:', e);
     }
@@ -1034,10 +1036,10 @@ const EditorWorkspace = () => {
                     <Clock className="w-3 h-3" />
                     {new Date(activeNote.updatedAt).toLocaleDateString()}
                   </span>
-                  {autoTags.length > 0 && (
-                    <div className="flex items-center gap-1 flex-wrap">
-                      {autoTags.map((tag, i) => (
-                        <span key={i} className={`px-2 py-0.5 rounded-full text-xs font-medium ${getTagColor(i)}`}>
+                  {activeNote.tags && activeNote.tags.length > 0 && (
+                    <div className="flex items-center gap-1">
+                      {activeNote.tags.map((tag, i) => (
+                        <span key={i} className={`px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${getTagColor(i)}`}>
                           {tag}
                         </span>
                       ))}
@@ -1266,7 +1268,7 @@ const EditorWorkspace = () => {
         )}
 
         {/* Split Editor Area */}
-        <div ref={containerRef} className="flex-1 flex overflow-hidden relative print:block print:overflow-visible print:h-auto">
+        <div ref={containerRef} className="flex-1 flex overflow-hidden relative print:block print:overflow-visible print:h-auto min-w-0">
            {activeNote ? (
              <>
                {/* Left: Markdown Input */}
@@ -1312,7 +1314,7 @@ const EditorWorkspace = () => {
                >
                     <div className={`flex-1 min-w-0 ${viewMode === 'preview' ? 'max-w-5xl mx-auto' : 'max-w-4xl'}`}>
                         <div className="p-8 pb-0">
-                            <Breadcrumbs noteTitle={activeNote.title} tags={autoTags} />
+                            <Breadcrumbs noteTitle={activeNote.title} tags={activeNote.tags} />
                         </div>
                         <div 
                             className={`prose ${theme === 'dark' ? 'dark:prose-invert' : ''} prose-lg max-w-full p-8 pt-0 overflow-hidden`}
