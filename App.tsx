@@ -206,7 +206,7 @@ const EditorWorkspace = () => {
         contentToDisplay = htmlToMarkdown(contentToDisplay);
     }
     // Filter out image reference definitions for a cleaner editor view.
-    return contentToDisplay.replace(imageRefRegex, '').trim();
+    return contentToDisplay.replace(imageRefRegex, '');
   }, [activeNote]);
 
 
