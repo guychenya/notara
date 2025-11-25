@@ -474,8 +474,15 @@ const EditorWorkspace = () => {
       case 'code': textToInsert = '\n```\ncode here\n```\n'; break;
       case 'divider': textToInsert = '\n---\n'; break;
       case 'image-upload':
+        // Remove slash first
+        updateNote(activeNote.id, { content: beforeSlash + afterSlash });
         setSlashMenuOpen(false);
-        imageFileInputRef.current?.click();
+        setTimeout(() => {
+          if (textareaRef.current) {
+            textareaRef.current.setSelectionRange(slashPos, slashPos);
+            imageFileInputRef.current?.click();
+          }
+        }, 0);
         return;
       case 'image-url':
         setSlashMenuOpen(false);
@@ -483,11 +490,45 @@ const EditorWorkspace = () => {
         if(url) {
           const newContent = beforeSlash + `![Image](${url})` + afterSlash;
           updateNote(activeNote.id, { content: newContent });
+          setTimeout(() => {
+            if (textareaRef.current) {
+              textareaRef.current.focus();
+              textareaRef.current.setSelectionRange(slashPos + `![Image](${url})`.length, slashPos + `![Image](${url})`.length);
+            }
+          }, 0);
         }
         return;
       case 'video':
         setSlashMenuOpen(false);
-        insertVideoBlock();
+        const videoUrl = prompt("Enter Video URL (YouTube or MP4):");
+        if (!videoUrl) return;
+        
+        let videoId = '';
+        if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+          if (videoUrl.includes('youtu.be')) {
+            videoId = videoUrl.split('/').pop() || '';
+          } else if (videoUrl.includes('v=')) {
+            videoId = videoUrl.split('v=')[1]?.split('&')[0] || '';
+          } else if (videoUrl.includes('embed/')) {
+            videoId = videoUrl.split('embed/')[1]?.split('?')[0] || '';
+          }
+        }
+        
+        let videoBlock = '';
+        if (videoId) {
+          videoBlock = `\n<div class="aspect-video my-6 rounded-xl overflow-hidden border border-gray-200 dark:border-[#333] shadow-lg"><iframe src="https://www.youtube.com/embed/${videoId}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>\n`;
+        } else {
+          videoBlock = `\n<div class="aspect-video my-6 rounded-xl overflow-hidden border border-gray-200 dark:border-[#333] shadow-lg"><video src="${videoUrl}" controls class="w-full h-full"></video></div>\n`;
+        }
+        
+        const videoContent = beforeSlash + videoBlock + afterSlash;
+        updateNote(activeNote.id, { content: videoContent });
+        setTimeout(() => {
+          if (textareaRef.current) {
+            textareaRef.current.focus();
+            textareaRef.current.setSelectionRange(slashPos + videoBlock.length, slashPos + videoBlock.length);
+          }
+        }, 0);
         return;
       default: textToInsert = '';
     }
