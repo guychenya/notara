@@ -54,17 +54,17 @@ export const parseMarkdown = (text: string, allNotes?: Array<{ id: string; title
   });
 
   // Headers with IDs for TOC
-  html = html.replace(/^### (.*$)/gim, () => {
+  html = html.replace(/^### (.*$)/gim, (match, text) => {
     const id = `heading-${headingIndex++}`;
-    return `<h3 id="${id}" class="text-xl font-bold mt-4 mb-2 text-emerald-400">$1</h3>`;
+    return `<h3 id="${id}" class="text-xl font-bold mt-4 mb-2 text-emerald-400">${text}</h3>`;
   });
-  html = html.replace(/^## (.*$)/gim, () => {
+  html = html.replace(/^## (.*$)/gim, (match, text) => {
     const id = `heading-${headingIndex++}`;
-    return `<h2 id="${id}" class="text-2xl font-bold mt-6 mb-3 text-emerald-500">$1</h2>`;
+    return `<h2 id="${id}" class="text-2xl font-bold mt-6 mb-3 text-emerald-500">${text}</h2>`;
   });
-  html = html.replace(/^# (.*$)/gim, () => {
+  html = html.replace(/^# (.*$)/gim, (match, text) => {
     const id = `heading-${headingIndex++}`;
-    return `<h1 id="${id}" class="text-3xl font-bold mt-8 mb-4 text-emerald-600">$1</h1>`;
+    return `<h1 id="${id}" class="text-3xl font-bold mt-8 mb-4 text-emerald-600">${text}</h1>`;
   });
 
   // Bold & Italic

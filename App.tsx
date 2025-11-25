@@ -404,19 +404,14 @@ const EditorWorkspace = () => {
   ];
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Only intercept keys when slash menu is open AND visible
+    // Only intercept navigation keys when slash menu is open
     if (slashMenuOpen) {
         if (['ArrowUp', 'ArrowDown', 'Escape'].includes(e.key)) {
             e.preventDefault(); 
             return;
         }
-        // Enter key selects command from slash menu
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            return;
-        }
-        // If any other character is typed, close the menu
-        if (!e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1 && e.key !== '/') {
+        // Close menu on any other key except Enter (let Enter work normally)
+        if (e.key !== 'Enter' && !e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1 && e.key !== '/') {
             setSlashMenuOpen(false);
         }
     }
