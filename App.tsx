@@ -977,12 +977,7 @@ Results-driven professional with [X] years of experience in [industry/field]. Pr
 
   const createFromTemplate = (templateKey: keyof typeof templates) => {
     const template = templates[templateKey];
-    addNote();
-    setTimeout(() => {
-      const newNote = notes[0];
-      updateNote(newNote.id, { title: template.title, content: template.content });
-      setActiveNoteId(newNote.id);
-    }, 100);
+    importNote(template.title, template.content);
     setShowTemplates(false);
   };
 
