@@ -8,8 +8,10 @@ import { LLMService } from './services/llmService';
 import { htmlToMarkdown } from './services/converter';
 import { parseMarkdown } from './services/markdown';
 import { TableOfContents } from './components/TableOfContents';
+import { Breadcrumbs } from './components/Breadcrumbs';
 import { SlashCommandMenu, type SlashCommand } from './components/SlashCommandMenu';
 import { VoiceModeModal } from './components/VoiceModeModal';
+import { importObsidianVault, exportAsObsidianVault } from './services/obsidian';
 import { ChatMessage } from './types';
 import 'highlight.js/styles/github-dark.css';
 import { 
@@ -120,6 +122,7 @@ const EditorWorkspace = () => {
   const headerTitleRef = useRef<HTMLInputElement>(null);
   const imageFileInputRef = useRef<HTMLInputElement>(null);
   const mdFileInputRef = useRef<HTMLInputElement>(null);
+  const obsidianVaultInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const renameTriggered = useRef<string | null>(null);
 
@@ -678,6 +681,37 @@ const EditorWorkspace = () => {
                        .join(' ');
         };
         const title = generateTitle(file.name);
+        importNote(title, content);
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
+  const handleImportObsidianVault = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    try {
+      const importedNotes = await importObsidianVault(files);
+      importedNotes.forEach(note => {
+        importNote(note.title, note.content);
+      });
+      alert(`Successfully imported ${importedNotes.length} notes from Obsidian vault!`);
+    } catch (error) {
+      console.error('Obsidian import error:', error);
+      alert('Failed to import Obsidian vault');
+    }
+    e.target.value = '';
+  };
+
+  const handleExportAsObsidian = () => {
+    if (notes.length === 0) {
+      alert('No notes to export');
+      return;
+    }
+    exportAsObsidianVault(notes);
+    alert(`Exporting ${notes.length} notes as Obsidian vault...`);
+  };
         
         importNote(title, content);
     };
@@ -920,6 +954,22 @@ const EditorWorkspace = () => {
                 className="w-full"
             >
                 <Upload className="w-4 h-4 mr-2" /> Import .md
+            </Button>
+            <Button 
+                variant="secondary"
+                onClick={() => obsidianVaultInputRef.current?.click()}
+                className="w-full"
+                title="Import Obsidian Vault"
+            >
+                <Folder className="w-4 h-4 mr-2" /> Obsidian
+            </Button>
+            <Button 
+                variant="secondary"
+                onClick={handleExportAsObsidian}
+                className="px-2.5"
+                title="Export as Obsidian Vault"
+            >
+                <Download className="w-4 h-4" />
             </Button>
             <Button variant="secondary" onClick={toggleTheme} className="px-2.5">
                 {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -1238,8 +1288,11 @@ const EditorWorkspace = () => {
                    className={`h-full overflow-y-auto custom-scrollbar ${theme === 'light' ? 'bg-dotted-pattern-light' : 'bg-dotted-pattern-dark'}`}
                >
                     <div className="flex-1 max-w-4xl">
+                        <div className="p-8 pb-0">
+                            <Breadcrumbs noteTitle={activeNote.title} tags={autoTags} />
+                        </div>
                         <div 
-                            className={`prose ${theme === 'dark' ? 'dark:prose-invert' : ''} max-w-none p-8`}
+                            className={`prose ${theme === 'dark' ? 'dark:prose-invert' : ''} max-w-none p-8 pt-0`}
                             dangerouslySetInnerHTML={{ __html: parseMarkdown(activeNote.content, notes) }}
                             onClick={(e) => {
                               const target = e.target as HTMLElement;
@@ -1274,6 +1327,16 @@ const EditorWorkspace = () => {
                 className="hidden"
                 accept=".md,.markdown,text/markdown"
                 onChange={handleImportMarkdown}
+           />
+           <input 
+                type="file" 
+                ref={obsidianVaultInputRef}
+                className="hidden"
+                accept=".md,.markdown,text/markdown"
+                multiple
+                webkitdirectory=""
+                directory=""
+                onChange={handleImportObsidianVault}
            />
 
 
