@@ -522,23 +522,456 @@ const EditorWorkspace = () => {
   const templates = {
     meeting: {
       title: 'Meeting Notes',
-      content: `# Meeting Notes\n\n**Date:** ${new Date().toLocaleDateString()}\n**Attendees:** \n\n## Agenda\n- \n\n## Discussion\n\n## Action Items\n- [ ] \n\n## Next Steps\n`
+      content: `# Meeting Notes
+
+**Date:** ${new Date().toLocaleDateString()}
+**Time:** 
+**Location:** 
+**Attendees:** 
+**Facilitator:** 
+
+## Agenda
+1. 
+2. 
+3. 
+
+## Discussion Points
+
+### Topic 1
+
+
+### Topic 2
+
+
+## Decisions Made
+- 
+
+## Action Items
+- [ ] **Task** - Assigned to: - Due: 
+- [ ] 
+
+## Parking Lot
+*Items to discuss later*
+- 
+
+## Next Meeting
+**Date:** 
+**Topics:** 
+`
     },
     journal: {
       title: 'Daily Journal',
-      content: `# Daily Journal - ${new Date().toLocaleDateString()}\n\n## Morning Thoughts\n\n## What I'm Grateful For\n1. \n2. \n3. \n\n## Today's Goals\n- [ ] \n\n## Evening Reflection\n`
+      content: `# Daily Journal - ${new Date().toLocaleDateString()}
+
+## 🌅 Morning Reflection
+**Mood:** 
+**Energy Level:** /10
+
+### What I'm Grateful For
+1. 
+2. 
+3. 
+
+### Today's Intentions
+- 
+- 
+- 
+
+## 📋 Daily Goals
+- [ ] Priority 1: 
+- [ ] Priority 2: 
+- [ ] Priority 3: 
+
+## 💭 Thoughts & Ideas
+
+
+## 🌙 Evening Reflection
+**What went well:**
+
+
+**What I learned:**
+
+
+**Tomorrow I will:**
+
+
+---
+*"Every day is a new beginning."*
+`
     },
     todo: {
       title: 'To-Do List',
-      content: `# To-Do List\n\n## High Priority\n- [ ] \n\n## Medium Priority\n- [ ] \n\n## Low Priority\n- [ ] \n\n## Completed\n`
+      content: `# To-Do List - ${new Date().toLocaleDateString()}
+
+## 🔥 Urgent & Important
+- [ ] 
+
+## 📌 Important (Not Urgent)
+- [ ] 
+
+## ⚡ Urgent (Not Important)
+- [ ] 
+
+## 📝 Low Priority
+- [ ] 
+
+## ✅ Completed Today
+- [x] 
+
+## 📅 This Week
+- [ ] 
+
+## 💡 Ideas & Notes
+
+`
     },
     project: {
       title: 'Project Plan',
-      content: `# Project Plan\n\n## Overview\n\n## Goals\n1. \n\n## Timeline\n\n## Resources Needed\n\n## Milestones\n- [ ] \n\n## Notes\n`
+      content: `# Project Plan
+
+## 📋 Project Overview
+**Project Name:** 
+**Start Date:** ${new Date().toLocaleDateString()}
+**Target Completion:** 
+**Project Lead:** 
+**Status:** 🟡 Planning
+
+## 🎯 Objectives
+1. 
+2. 
+3. 
+
+## 📊 Success Metrics
+- 
+- 
+
+## 👥 Team & Stakeholders
+**Team Members:**
+- 
+
+**Stakeholders:**
+- 
+
+## 📅 Timeline & Milestones
+- [ ] **Phase 1:** Planning - 
+- [ ] **Phase 2:** Development - 
+- [ ] **Phase 3:** Testing - 
+- [ ] **Phase 4:** Launch - 
+
+## 💰 Budget & Resources
+**Budget:** 
+**Resources Needed:**
+- 
+- 
+
+## ⚠️ Risks & Mitigation
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+|      |        |            |
+
+## 📝 Notes & Updates
+
+`
     },
     blog: {
       title: 'Blog Post',
-      content: `# Blog Post Title\n\n## Introduction\n\n## Main Content\n\n### Section 1\n\n### Section 2\n\n## Conclusion\n\n---\n*Tags:* \n*Published:* ${new Date().toLocaleDateString()}`
+      content: `# Blog Post Title
+
+**Author:** 
+**Date:** ${new Date().toLocaleDateString()}
+**Category:** 
+**Tags:** 
+**Status:** 📝 Draft
+
+## 📌 Key Takeaways
+- 
+- 
+- 
+
+## 🎯 Target Audience
+
+
+## 📖 Introduction
+*Hook the reader in the first paragraph*
+
+
+## 💡 Main Content
+
+### Section 1: 
+
+
+### Section 2: 
+
+
+### Section 3: 
+
+
+## 🎬 Conclusion
+
+
+## 📚 Resources & References
+- 
+
+## 💬 Call to Action
+
+
+---
+**SEO Keywords:** 
+**Meta Description:** 
+`
+    },
+    resume: {
+      title: 'Professional Resume',
+      content: `# [Your Full Name]
+
+**Email:** your.email@example.com | **Phone:** (123) 456-7890
+**LinkedIn:** linkedin.com/in/yourprofile | **Portfolio:** yourwebsite.com
+**Location:** City, State
+
+---
+
+## 👤 Professional Summary
+Results-driven professional with [X] years of experience in [industry/field]. Proven track record of [key achievement]. Seeking to leverage expertise in [skills] to contribute to [target role/company].
+
+---
+
+## 💼 Work Experience
+
+### [Job Title] | [Company Name]
+*[Start Date] - [End Date] | [Location]*
+
+- Achieved [specific result] by [action taken], resulting in [quantifiable impact]
+- Led [project/initiative] that [outcome]
+- Collaborated with [teams/departments] to [achievement]
+- Managed [responsibility] with [result]
+
+### [Previous Job Title] | [Previous Company]
+*[Start Date] - [End Date] | [Location]*
+
+- 
+- 
+- 
+
+---
+
+## 🎓 Education
+
+### [Degree] in [Field of Study]
+**[University Name]** | *Graduated: [Year]*
+- GPA: [X.XX] (if notable)
+- Relevant Coursework: 
+- Honors/Awards: 
+
+---
+
+## 🛠️ Skills
+
+**Technical Skills:** 
+- 
+
+**Soft Skills:** 
+- Leadership & Team Management
+- Communication & Presentation
+- Problem Solving & Critical Thinking
+
+**Tools & Technologies:** 
+- 
+
+**Languages:** 
+- English (Native)
+- 
+
+---
+
+## 🏆 Achievements & Certifications
+- 
+- 
+- 
+
+---
+
+## 📂 Projects
+
+### [Project Name]
+*[Date] | [Link if applicable]*
+- Description: 
+- Technologies: 
+- Impact: 
+
+---
+
+## 🤝 Volunteer Experience
+**[Role]** | [Organization] | *[Dates]*
+- 
+
+---
+
+*References available upon request*
+`
+    },
+    standup: {
+      title: 'Daily Standup',
+      content: `# Daily Standup - ${new Date().toLocaleDateString()}
+
+## ✅ Yesterday's Accomplishments
+- 
+- 
+- 
+
+## 🎯 Today's Goals
+- 
+- 
+- 
+
+## 🚧 Blockers & Challenges
+- 
+
+## 💡 Notes
+- 
+
+## 🔗 Related Links
+- 
+`
+    },
+    research: {
+      title: 'Research Notes',
+      content: `# Research Notes
+
+**Topic:** 
+**Date:** ${new Date().toLocaleDateString()}
+**Research Question:** 
+
+---
+
+## 🎯 Objective
+
+
+## 📚 Sources
+1. [Source Title](URL) - Author, Date
+2. 
+
+## 🔍 Key Findings
+
+### Finding 1
+
+
+### Finding 2
+
+
+### Finding 3
+
+
+## 📊 Data & Statistics
+- 
+- 
+
+## 💭 Analysis & Insights
+
+
+## ❓ Questions for Further Research
+- 
+- 
+
+## 📝 Summary
+
+
+## 🔗 Related Topics
+- 
+
+## 📌 Next Steps
+- [ ] 
+- [ ] 
+`
+    },
+    retrospective: {
+      title: 'Sprint Retrospective',
+      content: `# Sprint Retrospective
+
+**Sprint:** 
+**Date:** ${new Date().toLocaleDateString()}
+**Team:** 
+**Facilitator:** 
+
+---
+
+## 😊 What Went Well
+- 
+- 
+- 
+
+## 😕 What Didn't Go Well
+- 
+- 
+- 
+
+## 💡 Ideas & Improvements
+- 
+- 
+- 
+
+## 🎯 Action Items
+- [ ] **Action** - Owner: - Due: 
+- [ ] 
+
+## 📊 Sprint Metrics
+**Velocity:** 
+**Completed Stories:** 
+**Bugs Fixed:** 
+
+## 🎉 Shoutouts & Appreciation
+- 
+
+## 📝 Notes
+
+`
+    },
+    weekly: {
+      title: 'Weekly Review',
+      content: `# Weekly Review - Week of ${new Date().toLocaleDateString()}
+
+## 🎯 Goals Review
+**Last Week's Goals:**
+- [ ] 
+- [ ] 
+- [ ] 
+
+**Completion Rate:** __%
+
+## 🏆 Wins & Achievements
+- 
+- 
+- 
+
+## 📚 What I Learned
+- 
+- 
+
+## 📊 Time Analysis
+**Most Productive Day:** 
+**Time Wasters:** 
+**Focus Areas:** 
+
+## 🔄 Habits Tracker
+- [ ] Exercise (__ days)
+- [ ] Reading (__ days)
+- [ ] Meditation (__ days)
+- [ ] 
+
+## 🎯 Next Week's Goals
+1. 
+2. 
+3. 
+
+## 💭 Reflections
+
+
+## 📌 Carry Over Items
+- 
+- 
+
+---
+*"Progress, not perfection."*
+`
     }
   };
 
@@ -1590,7 +2023,7 @@ const EditorWorkspace = () => {
         {/* Templates Modal */}
         {showTemplates && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="w-full max-w-3xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+            <div className="w-full max-w-4xl max-h-[90vh] bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden flex flex-col">
               <div className="p-6 border-b border-gray-200/50 dark:border-gray-700/50">
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Choose a Template</h2>
@@ -1599,11 +2032,11 @@ const EditorWorkspace = () => {
                   </button>
                 </div>
               </div>
-              <div className="p-6 grid grid-cols-2 gap-4">
+              <div className="p-6 grid grid-cols-2 md:grid-cols-3 gap-4 overflow-y-auto">
                 <button onClick={() => createFromTemplate('meeting')} className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl hover:shadow-lg transition-all border border-blue-200 dark:border-blue-700 text-left">
                   <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400 mb-3" />
                   <h3 className="font-bold text-gray-900 dark:text-white mb-1">Meeting Notes</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Agenda, discussion, action items</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Agenda, attendees, action items</p>
                 </button>
                 <button onClick={() => createFromTemplate('journal')} className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl hover:shadow-lg transition-all border border-purple-200 dark:border-purple-700 text-left">
                   <FileText className="w-8 h-8 text-purple-600 dark:text-purple-400 mb-3" />
@@ -1613,17 +2046,42 @@ const EditorWorkspace = () => {
                 <button onClick={() => createFromTemplate('todo')} className="p-6 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl hover:shadow-lg transition-all border border-green-200 dark:border-green-700 text-left">
                   <CheckSquare className="w-8 h-8 text-green-600 dark:text-green-400 mb-3" />
                   <h3 className="font-bold text-gray-900 dark:text-white mb-1">To-Do List</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Prioritized task management</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Eisenhower matrix priorities</p>
                 </button>
                 <button onClick={() => createFromTemplate('project')} className="p-6 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-xl hover:shadow-lg transition-all border border-orange-200 dark:border-orange-700 text-left">
                   <Folder className="w-8 h-8 text-orange-600 dark:text-orange-400 mb-3" />
                   <h3 className="font-bold text-gray-900 dark:text-white mb-1">Project Plan</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Goals, timeline, milestones</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Timeline, budget, milestones</p>
                 </button>
                 <button onClick={() => createFromTemplate('blog')} className="p-6 bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-900/20 dark:to-pink-800/20 rounded-xl hover:shadow-lg transition-all border border-pink-200 dark:border-pink-700 text-left">
                   <PenLine className="w-8 h-8 text-pink-600 dark:text-pink-400 mb-3" />
                   <h3 className="font-bold text-gray-900 dark:text-white mb-1">Blog Post</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Structured article format</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">SEO-ready article structure</p>
+                </button>
+                <button onClick={() => createFromTemplate('resume')} className="p-6 bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/20 dark:to-indigo-800/20 rounded-xl hover:shadow-lg transition-all border border-indigo-200 dark:border-indigo-700 text-left">
+                  <FileText className="w-8 h-8 text-indigo-600 dark:text-indigo-400 mb-3" />
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Resume</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Professional CV template</p>
+                </button>
+                <button onClick={() => createFromTemplate('standup')} className="p-6 bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 rounded-xl hover:shadow-lg transition-all border border-teal-200 dark:border-teal-700 text-left">
+                  <CheckCircle className="w-8 h-8 text-teal-600 dark:text-teal-400 mb-3" />
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Daily Standup</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Yesterday, today, blockers</p>
+                </button>
+                <button onClick={() => createFromTemplate('research')} className="p-6 bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-900/20 dark:to-cyan-800/20 rounded-xl hover:shadow-lg transition-all border border-cyan-200 dark:border-cyan-700 text-left">
+                  <Lightbulb className="w-8 h-8 text-cyan-600 dark:text-cyan-400 mb-3" />
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Research Notes</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Sources, findings, analysis</p>
+                </button>
+                <button onClick={() => createFromTemplate('retrospective')} className="p-6 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 rounded-xl hover:shadow-lg transition-all border border-amber-200 dark:border-amber-700 text-left">
+                  <History className="w-8 h-8 text-amber-600 dark:text-amber-400 mb-3" />
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Retrospective</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Sprint review & improvements</p>
+                </button>
+                <button onClick={() => createFromTemplate('weekly')} className="p-6 bg-gradient-to-br from-rose-50 to-rose-100 dark:from-rose-900/20 dark:to-rose-800/20 rounded-xl hover:shadow-lg transition-all border border-rose-200 dark:border-rose-700 text-left">
+                  <Clock className="w-8 h-8 text-rose-600 dark:text-rose-400 mb-3" />
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Weekly Review</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Goals, wins, reflections</p>
                 </button>
               </div>
             </div>
