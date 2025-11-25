@@ -96,6 +96,7 @@ const EditorWorkspace = () => {
   const [showTemplates, setShowTemplates] = useState(false);
   const [showQuickCapture, setShowQuickCapture] = useState(false);
   const [quickCaptureText, setQuickCaptureText] = useState("");
+  const [showNewNoteMenu, setShowNewNoteMenu] = useState(false);
   
   // Phase 3: AI Chat & Smart Features
   const [showAIChat, setShowAIChat] = useState(false);
@@ -1412,17 +1413,42 @@ Results-driven professional with [X] years of experience in [industry/field]. Pr
         </div>
 
         <div className="p-3 border-t border-gray-200 dark:border-[#222] mt-auto space-y-2">
-           <Button 
-             onClick={addNote}
-             className="w-full bg-emerald-600 hover:bg-emerald-700 dark:hover:bg-emerald-500 shadow-lg shadow-emerald-900/20"
-           >
-              <Plus className="w-4 h-4 mr-2" /> New Note
-           </Button>
+           <div className="relative">
+             <Button 
+               onClick={() => setShowNewNoteMenu(!showNewNoteMenu)}
+               className="w-full bg-emerald-600 hover:bg-emerald-700 dark:hover:bg-emerald-500 shadow-lg shadow-emerald-900/20"
+             >
+                <Plus className="w-4 h-4 mr-2" /> New Note
+             </Button>
+             
+             {showNewNoteMenu && (
+               <div className="absolute bottom-full left-0 right-0 mb-2 bg-white dark:bg-[#1C1C1C] border border-gray-200 dark:border-[#333] rounded-lg shadow-xl z-50 overflow-hidden">
+                 <button 
+                   onClick={() => { addNote(); setShowNewNoteMenu(false); }}
+                   className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#222] transition-colors"
+                 >
+                   <Plus className="w-4 h-4" /> Blank Note
+                 </button>
+                 <button 
+                   onClick={() => { mdFileInputRef.current?.click(); setShowNewNoteMenu(false); }}
+                   className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#222] transition-colors"
+                 >
+                   <Upload className="w-4 h-4" /> Load from Computer
+                 </button>
+                 <button 
+                   onClick={() => { setShowTemplates(true); setShowNewNoteMenu(false); }}
+                   className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#222] transition-colors border-t border-gray-200 dark:border-[#333]"
+                 >
+                   <FileText className="w-4 h-4" /> From Template
+                 </button>
+               </div>
+             )}
+           </div>
            <div className="grid grid-cols-2 gap-2">
             <Button 
                 variant="secondary"
                 onClick={() => mdFileInputRef.current?.click()}
-                className="text-xs"
+                className="text-xs hidden"
                 title="Import Markdown"
             >
                 <Upload className="w-3.5 h-3.5 mr-1" /> Import
@@ -1562,15 +1588,6 @@ Results-driven professional with [X] years of experience in [industry/field]. Pr
                 title="Focus Mode (Esc to exit)"
               >
                 <Eye className="w-4 h-4" />
-              </button>
-
-              {/* Templates Button */}
-              <button
-                onClick={() => setShowTemplates(true)}
-                className="p-2 hover:bg-gray-200 dark:hover:bg-[#222] rounded-lg transition-colors text-gray-500 dark:text-gray-400"
-                title="Templates (⌘K)"
-              >
-                <FileText className="w-4 h-4" />
               </button>
 
               {/* Command Palette Button */}
@@ -2027,65 +2044,63 @@ Results-driven professional with [X] years of experience in [industry/field]. Pr
         {/* Templates Modal */}
         {showTemplates && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="w-full max-w-4xl max-h-[90vh] bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden flex flex-col">
-              <div className="p-6 border-b border-gray-200/50 dark:border-gray-700/50">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Choose a Template</h2>
-                  <button onClick={() => setShowTemplates(false)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
+            <div className="w-full max-w-2xl max-h-[80vh] bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden flex flex-col">
+              <div className="p-4 border-b border-gray-200/50 dark:border-gray-700/50 flex items-center justify-between">
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">Choose Template</h2>
+                <button onClick={() => setShowTemplates(false)} className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                  <X className="w-4 h-4" />
+                </button>
               </div>
-              <div className="p-6 grid grid-cols-2 md:grid-cols-3 gap-4 overflow-y-auto">
-                <button onClick={() => createFromTemplate('meeting')} className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl hover:shadow-lg transition-all border border-blue-200 dark:border-blue-700 text-left">
-                  <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400 mb-3" />
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Meeting Notes</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Agenda, attendees, action items</p>
+              <div className="p-4 grid grid-cols-3 gap-2 overflow-y-auto">
+                <button onClick={() => createFromTemplate('meeting')} className="p-3 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg hover:shadow-md transition-all border border-blue-200 dark:border-blue-700 text-left">
+                  <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400 mb-1.5" />
+                  <h3 className="font-semibold text-sm text-gray-900 dark:text-white">Meeting</h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Notes & agenda</p>
                 </button>
-                <button onClick={() => createFromTemplate('journal')} className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl hover:shadow-lg transition-all border border-purple-200 dark:border-purple-700 text-left">
-                  <FileText className="w-8 h-8 text-purple-600 dark:text-purple-400 mb-3" />
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Daily Journal</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Gratitude, goals, reflection</p>
+                <button onClick={() => createFromTemplate('journal')} className="p-3 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg hover:shadow-md transition-all border border-purple-200 dark:border-purple-700 text-left">
+                  <FileText className="w-5 h-5 text-purple-600 dark:text-purple-400 mb-1.5" />
+                  <h3 className="font-semibold text-sm text-gray-900 dark:text-white">Journal</h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Daily reflection</p>
                 </button>
-                <button onClick={() => createFromTemplate('todo')} className="p-6 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl hover:shadow-lg transition-all border border-green-200 dark:border-green-700 text-left">
-                  <CheckSquare className="w-8 h-8 text-green-600 dark:text-green-400 mb-3" />
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">To-Do List</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Eisenhower matrix priorities</p>
+                <button onClick={() => createFromTemplate('todo')} className="p-3 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg hover:shadow-md transition-all border border-green-200 dark:border-green-700 text-left">
+                  <CheckSquare className="w-5 h-5 text-green-600 dark:text-green-400 mb-1.5" />
+                  <h3 className="font-semibold text-sm text-gray-900 dark:text-white">To-Do</h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Task list</p>
                 </button>
-                <button onClick={() => createFromTemplate('project')} className="p-6 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-xl hover:shadow-lg transition-all border border-orange-200 dark:border-orange-700 text-left">
-                  <Folder className="w-8 h-8 text-orange-600 dark:text-orange-400 mb-3" />
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Project Plan</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Timeline, budget, milestones</p>
+                <button onClick={() => createFromTemplate('project')} className="p-3 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-lg hover:shadow-md transition-all border border-orange-200 dark:border-orange-700 text-left">
+                  <Folder className="w-5 h-5 text-orange-600 dark:text-orange-400 mb-1.5" />
+                  <h3 className="font-semibold text-sm text-gray-900 dark:text-white">Project</h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Plan & track</p>
                 </button>
-                <button onClick={() => createFromTemplate('blog')} className="p-6 bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-900/20 dark:to-pink-800/20 rounded-xl hover:shadow-lg transition-all border border-pink-200 dark:border-pink-700 text-left">
-                  <PenLine className="w-8 h-8 text-pink-600 dark:text-pink-400 mb-3" />
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Blog Post</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">SEO-ready article structure</p>
+                <button onClick={() => createFromTemplate('blog')} className="p-3 bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-900/20 dark:to-pink-800/20 rounded-lg hover:shadow-md transition-all border border-pink-200 dark:border-pink-700 text-left">
+                  <PenLine className="w-5 h-5 text-pink-600 dark:text-pink-400 mb-1.5" />
+                  <h3 className="font-semibold text-sm text-gray-900 dark:text-white">Blog</h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Article draft</p>
                 </button>
-                <button onClick={() => createFromTemplate('resume')} className="p-6 bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/20 dark:to-indigo-800/20 rounded-xl hover:shadow-lg transition-all border border-indigo-200 dark:border-indigo-700 text-left">
-                  <FileText className="w-8 h-8 text-indigo-600 dark:text-indigo-400 mb-3" />
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Resume</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Professional CV template</p>
+                <button onClick={() => createFromTemplate('resume')} className="p-3 bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/20 dark:to-indigo-800/20 rounded-lg hover:shadow-md transition-all border border-indigo-200 dark:border-indigo-700 text-left">
+                  <FileText className="w-5 h-5 text-indigo-600 dark:text-indigo-400 mb-1.5" />
+                  <h3 className="font-semibold text-sm text-gray-900 dark:text-white">Resume</h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Professional CV</p>
                 </button>
-                <button onClick={() => createFromTemplate('standup')} className="p-6 bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 rounded-xl hover:shadow-lg transition-all border border-teal-200 dark:border-teal-700 text-left">
-                  <CheckCircle className="w-8 h-8 text-teal-600 dark:text-teal-400 mb-3" />
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Daily Standup</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Yesterday, today, blockers</p>
+                <button onClick={() => createFromTemplate('standup')} className="p-3 bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 rounded-lg hover:shadow-md transition-all border border-teal-200 dark:border-teal-700 text-left">
+                  <CheckCircle className="w-5 h-5 text-teal-600 dark:text-teal-400 mb-1.5" />
+                  <h3 className="font-semibold text-sm text-gray-900 dark:text-white">Standup</h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Daily update</p>
                 </button>
-                <button onClick={() => createFromTemplate('research')} className="p-6 bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-900/20 dark:to-cyan-800/20 rounded-xl hover:shadow-lg transition-all border border-cyan-200 dark:border-cyan-700 text-left">
-                  <Lightbulb className="w-8 h-8 text-cyan-600 dark:text-cyan-400 mb-3" />
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Research Notes</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Sources, findings, analysis</p>
+                <button onClick={() => createFromTemplate('research')} className="p-3 bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-900/20 dark:to-cyan-800/20 rounded-lg hover:shadow-md transition-all border border-cyan-200 dark:border-cyan-700 text-left">
+                  <Lightbulb className="w-5 h-5 text-cyan-600 dark:text-cyan-400 mb-1.5" />
+                  <h3 className="font-semibold text-sm text-gray-900 dark:text-white">Research</h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Study notes</p>
                 </button>
-                <button onClick={() => createFromTemplate('retrospective')} className="p-6 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 rounded-xl hover:shadow-lg transition-all border border-amber-200 dark:border-amber-700 text-left">
-                  <History className="w-8 h-8 text-amber-600 dark:text-amber-400 mb-3" />
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Retrospective</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Sprint review & improvements</p>
+                <button onClick={() => createFromTemplate('retrospective')} className="p-3 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 rounded-lg hover:shadow-md transition-all border border-amber-200 dark:border-amber-700 text-left">
+                  <History className="w-5 h-5 text-amber-600 dark:text-amber-400 mb-1.5" />
+                  <h3 className="font-semibold text-sm text-gray-900 dark:text-white">Retro</h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Sprint review</p>
                 </button>
-                <button onClick={() => createFromTemplate('weekly')} className="p-6 bg-gradient-to-br from-rose-50 to-rose-100 dark:from-rose-900/20 dark:to-rose-800/20 rounded-xl hover:shadow-lg transition-all border border-rose-200 dark:border-rose-700 text-left">
-                  <Clock className="w-8 h-8 text-rose-600 dark:text-rose-400 mb-3" />
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Weekly Review</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Goals, wins, reflections</p>
+                <button onClick={() => createFromTemplate('weekly')} className="p-3 bg-gradient-to-br from-rose-50 to-rose-100 dark:from-rose-900/20 dark:to-rose-800/20 rounded-lg hover:shadow-md transition-all border border-rose-200 dark:border-rose-700 text-left">
+                  <Clock className="w-5 h-5 text-rose-600 dark:text-rose-400 mb-1.5" />
+                  <h3 className="font-semibold text-sm text-gray-900 dark:text-white">Weekly</h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Review goals</p>
                 </button>
               </div>
             </div>
