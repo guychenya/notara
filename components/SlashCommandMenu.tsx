@@ -19,6 +19,7 @@ interface Props {
 export const SlashCommandMenu: React.FC<Props> = ({ isOpen, position, commands, onSelect, onClose }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const menuRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) setSelectedIndex(0);
@@ -69,10 +70,11 @@ export const SlashCommandMenu: React.FC<Props> = ({ isOpen, position, commands, 
   }, [isOpen, selectedIndex, onSelect, onClose, commands]);
 
   useEffect(() => {
-    if (menuRef.current) {
-      const selectedElement = menuRef.current.children[selectedIndex] as HTMLElement;
-      if (selectedElement) {
-        selectedElement.scrollIntoView({ block: 'nearest' });
+    if (scrollContainerRef.current) {
+      const buttons = scrollContainerRef.current.querySelectorAll('button');
+      const selectedButton = buttons[selectedIndex];
+      if (selectedButton) {
+        selectedButton.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       }
     }
   }, [selectedIndex]);
@@ -114,7 +116,7 @@ export const SlashCommandMenu: React.FC<Props> = ({ isOpen, position, commands, 
         <span>Insert Block</span>
         <span className="text-[10px] bg-gray-200 dark:bg-[#222] px-1.5 rounded border border-gray-300 dark:border-[#333]">ESC to close</span>
       </div>
-      <div className="overflow-y-auto p-1 max-h-[280px]">
+      <div ref={scrollContainerRef} className="overflow-y-auto p-1 max-h-[280px]">
         {commands.map((cmd, index) => (
           <button
             key={cmd.id}

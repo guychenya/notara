@@ -441,25 +441,31 @@ const EditorWorkspace = () => {
   const executeSlashCommand = (command: SlashCommand) => {
     if (!textareaRef.current) return;
     
-    // We need to remove the '/' that triggered the menu
-    const end = textareaRef.current.selectionEnd;
-    const start = textareaRef.current.selectionStart;
-    const val = textareaRef.current.value;
+    const textarea = textareaRef.current;
+    const cursorPos = textarea.selectionStart;
+    const val = textarea.value;
 
-    // Remove the slash (at start-1)
-    const beforeSlash = val.substring(0, start - 1);
-    const afterSlash = val.substring(end);
+    // Find the slash position (should be right before cursor)
+    const slashPos = val.lastIndexOf('/', cursorPos);
     
-    const newVal = beforeSlash + afterSlash;
-    handleContentChange(newVal);
+    if (slashPos === -1) {
+      setSlashMenuOpen(false);
+      return;
+    }
 
-    // Focus and execute
+    // Remove the slash
+    const beforeSlash = val.substring(0, slashPos);
+    const afterSlash = val.substring(cursorPos);
+    
+    handleContentChange(beforeSlash + afterSlash);
+
+    // Set cursor position and execute command
     setTimeout(() => {
-        if (textareaRef.current) {
-            textareaRef.current.focus();
-            textareaRef.current.setSelectionRange(start - 1, start - 1);
-            command.action();
-        }
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        textareaRef.current.setSelectionRange(slashPos, slashPos);
+        command.action();
+      }
     }, 0);
     
     setSlashMenuOpen(false);
