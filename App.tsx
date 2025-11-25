@@ -1309,14 +1309,14 @@ const EditorWorkspace = () => {
                        display: viewMode === 'edit' ? 'none' : 'flex',
                        pointerEvents: isDragging ? 'none' : 'auto'
                    }}
-                   className={`h-full overflow-y-auto custom-scrollbar ${theme === 'light' ? 'bg-dotted-pattern-light' : 'bg-dotted-pattern-dark'}`}
+                   className={`h-full overflow-y-auto custom-scrollbar ${theme === 'light' ? 'bg-dotted-pattern-light' : 'bg-dotted-pattern-dark'} ${viewMode === 'preview' ? 'justify-center' : ''}`}
                >
-                    <div className="flex-1 max-w-4xl min-w-0">
+                    <div className={`flex-1 min-w-0 ${viewMode === 'preview' ? 'max-w-5xl mx-auto' : 'max-w-4xl'}`}>
                         <div className="p-8 pb-0">
                             <Breadcrumbs noteTitle={activeNote.title} tags={autoTags} />
                         </div>
                         <div 
-                            className={`prose ${theme === 'dark' ? 'dark:prose-invert' : ''} max-w-full p-8 pt-0 overflow-hidden`}
+                            className={`prose ${theme === 'dark' ? 'dark:prose-invert' : ''} prose-lg max-w-full p-8 pt-0 overflow-hidden`}
                             dangerouslySetInnerHTML={{ __html: parseMarkdown(activeNote.content, notes) }}
                             onClick={(e) => {
                               const target = e.target as HTMLElement;
@@ -1328,7 +1328,7 @@ const EditorWorkspace = () => {
                             }}
                         />
                     </div>
-                    <TableOfContents content={activeNote.content} />
+                    {viewMode === 'split' && <TableOfContents content={activeNote.content} />}
                </div>
              </>
            ) : (
