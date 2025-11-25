@@ -215,7 +215,11 @@ const EditorWorkspace = () => {
           // Re-attach the image reference definitions that are visually hidden.
           const imageRefs = activeNote.content.match(imageRefRegex) || [];
           const fullContent = val + (imageRefs.length > 0 ? '\n\n' + imageRefs.join('\n') : '');
-          updateNote(activeNote.id, { content: fullContent });
+          
+          // Use requestAnimationFrame to prevent cursor jumping
+          requestAnimationFrame(() => {
+              updateNote(activeNote.id, { content: fullContent });
+          });
       }
   };
 
@@ -409,9 +413,15 @@ const EditorWorkspace = () => {
   ];
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Close slash menu on Enter in textarea
-    if (e.key === 'Enter' && slashMenuOpen) {
-        setSlashMenuOpen(false);
+    // Handle Enter key - always insert new line, never trap cursor
+    if (e.key === 'Enter') {
+        if (slashMenuOpen) {
+            // Close slash menu but allow Enter to work normally
+            setSlashMenuOpen(false);
+            return;
+        }
+        // Let default Enter behavior work (insert newline)
+        return;
     }
     
     // Open slash menu on '/' key
@@ -1316,6 +1326,9 @@ const EditorWorkspace = () => {
                     onKeyUp={handleKeyUp}
                     onMouseUp={handleTextSelection}
                     spellCheck={false}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="off"
                  />
                </div>
 
