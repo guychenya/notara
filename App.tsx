@@ -130,6 +130,7 @@ const EditorWorkspace = () => {
   const mdFileInputRef = useRef<HTMLInputElement>(null);
   const obsidianVaultInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const chatMessagesRef = useRef<HTMLDivElement>(null);
   const renameTriggered = useRef<string | null>(null);
 
   // Effect to handle focusing the title input for renaming
@@ -142,6 +143,13 @@ const EditorWorkspace = () => {
         renameTriggered.current = null;
     }
   }, [activeNoteId]);
+
+  // Auto-scroll chat messages to bottom
+  useEffect(() => {
+    if (chatMessagesRef.current) {
+      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
 
   // Auto-focus textarea when switching notes or creating new ones
   useEffect(() => {
@@ -1682,7 +1690,7 @@ const EditorWorkspace = () => {
             </div>
 
             {/* Chat Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div ref={chatMessagesRef} className="flex-1 overflow-y-auto p-4 space-y-4">
               {chatMessages.length === 0 && (
                 <div className="text-center text-gray-500 dark:text-gray-400 text-sm mt-12">
                   <Sparkles className="w-16 h-16 mx-auto mb-4 text-purple-300 dark:text-purple-700" />
