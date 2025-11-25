@@ -37,6 +37,8 @@ export const SlashCommandMenu: React.FC<Props> = ({ isOpen, position, commands, 
       )
     : commands;
 
+  console.log('SlashMenu render - searchQuery:', searchQuery, 'commands:', commands.length, 'filtered:', filteredCommands.length);
+
   // FIX: Added a click-outside handler to ensure the menu closes properly.
   // This prevents a bug where the menu state could get stuck as "open",
   // which would block the "Enter" key in the main editor.
