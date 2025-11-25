@@ -214,8 +214,8 @@ const EditorWorkspace = () => {
       if (activeNote) {
           // Re-attach the image reference definitions that are visually hidden.
           const imageRefs = activeNote.content.match(imageRefRegex) || [];
-          const fullContent = val.trim() + (imageRefs.length > 0 ? '\n\n' + imageRefs.join('\n') : '');
-          updateNote(activeNote.id, { content: fullContent.trim() });
+          const fullContent = val + (imageRefs.length > 0 ? '\n\n' + imageRefs.join('\n') : '');
+          updateNote(activeNote.id, { content: fullContent });
       }
   };
 
