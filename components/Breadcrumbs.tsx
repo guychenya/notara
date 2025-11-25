@@ -8,7 +8,7 @@ interface BreadcrumbsProps {
 
 export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ noteTitle, tags }) => {
   return (
-    <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4 flex-wrap">
+    <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4 flex-wrap print:hidden">
       <Home className="w-4 h-4" />
       <ChevronRight className="w-3 h-3" />
       <span className="text-gray-700 dark:text-gray-300">Notes</span>

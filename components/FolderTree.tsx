@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Folder, FolderPlus, ChevronRight, ChevronDown, MoreVertical, Edit2, Trash2 } from 'lucide-react';
+import { Folder, FolderPlus, ChevronRight, ChevronDown, Edit2, Trash2, Plus } from 'lucide-react';
 import { Folder as FolderType } from '../types';
 
 interface FolderTreeProps {
@@ -9,6 +9,8 @@ interface FolderTreeProps {
   onAddFolder: (name: string, parentId?: string) => void;
   onUpdateFolder: (id: string, name: string) => void;
   onDeleteFolder: (id: string) => void;
+  onAddNoteToFolder: (folderId: string) => void;
+  onMoveNoteToFolder: (noteId: string, folderId?: string) => void;
 }
 
 export const FolderTree: React.FC<FolderTreeProps> = ({
@@ -18,16 +20,33 @@ export const FolderTree: React.FC<FolderTreeProps> = ({
   onAddFolder,
   onUpdateFolder,
   onDeleteFolder,
+  onAddNoteToFolder,
+  onMoveNoteToFolder,
 }) => {
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
+  const [dragOverFolder, setDragOverFolder] = useState<string | null>(null);
 
   const toggleExpand = (id: string) => {
     const newExpanded = new Set(expandedFolders);
     if (newExpanded.has(id)) newExpanded.delete(id);
     else newExpanded.add(id);
     setExpandedFolders(newExpanded);
+  };
+
+  const handleDragOver = (e: React.DragEvent, folderId?: string) => {
+    e.preventDefault();
+    setDragOverFolder(folderId || 'root');
+  };
+
+  const handleDrop = (e: React.DragEvent, folderId?: string) => {
+    e.preventDefault();
+    const noteId = e.dataTransfer.getData('noteId');
+    if (noteId) {
+      onMoveNoteToFolder(noteId, folderId);
+    }
+    setDragOverFolder(null);
   };
 
   const rootFolders = folders.filter(f => !f.parentId);
@@ -37,14 +56,18 @@ export const FolderTree: React.FC<FolderTreeProps> = ({
     const isExpanded = expandedFolders.has(folder.id);
     const isSelected = selectedFolderId === folder.id;
     const isEditing = editingId === folder.id;
+    const isDragOver = dragOverFolder === folder.id;
 
     return (
       <div key={folder.id}>
         <div
           className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer group ${
             isSelected ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-          }`}
+          } ${isDragOver ? 'ring-2 ring-emerald-500' : ''}`}
           style={{ paddingLeft: `${level * 16 + 8}px` }}
+          onDragOver={(e) => handleDragOver(e, folder.id)}
+          onDrop={(e) => handleDrop(e, folder.id)}
+          onDragLeave={() => setDragOverFolder(null)}
         >
           {children.length > 0 && (
             <button onClick={() => toggleExpand(folder.id)} className="p-0.5">
@@ -78,6 +101,13 @@ export const FolderTree: React.FC<FolderTreeProps> = ({
             </span>
           )}
           <div className="opacity-0 group-hover:opacity-100 flex gap-1">
+            <button
+              onClick={() => onAddNoteToFolder(folder.id)}
+              className="p-1 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded"
+              title="New note in folder"
+            >
+              <Plus className="w-3 h-3 text-emerald-500" />
+            </button>
             <button
               onClick={() => {
                 setEditingId(folder.id);
@@ -117,9 +147,12 @@ export const FolderTree: React.FC<FolderTreeProps> = ({
       </div>
       <button
         onClick={() => onSelectFolder(undefined)}
+        onDragOver={(e) => handleDragOver(e, undefined)}
+        onDrop={(e) => handleDrop(e, undefined)}
+        onDragLeave={() => setDragOverFolder(null)}
         className={`w-full flex items-center gap-2 px-2 py-1.5 rounded text-sm ${
           !selectedFolderId ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-        }`}
+        } ${dragOverFolder === 'root' ? 'ring-2 ring-emerald-500' : ''}`}
       >
         <Folder className="w-4 h-4" />
         All Notes

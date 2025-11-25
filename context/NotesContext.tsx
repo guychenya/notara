@@ -8,7 +8,7 @@ interface NotesContextType {
   notes: Note[];
   activeNoteId: string | null;
   setActiveNoteId: (id: string) => void;
-  addNote: () => void;
+  addNote: (folderId?: string) => void;
   updateNote: (id: string, updates: Partial<Note>) => void;
   deleteNote: (id: string) => void;
   importNote: (title: string, content: string) => void;
@@ -56,12 +56,13 @@ export const NotesProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, [notes, activeNoteId]);
 
 
-  const addNote = () => {
+  const addNote = (folderId?: string) => {
     const newNote: Note = {
       id: crypto.randomUUID(),
       title: '',
       content: '',
       updatedAt: Date.now(),
+      folderId,
     };
     // Add the new note to the top of the list and make it active.
     setNotes(prevNotes => [newNote, ...prevNotes]);

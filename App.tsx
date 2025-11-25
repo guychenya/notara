@@ -881,6 +881,8 @@ const EditorWorkspace = () => {
              onAddFolder={addFolder}
              onUpdateFolder={updateFolder}
              onDeleteFolder={deleteFolder}
+             onAddNoteToFolder={(folderId) => addNote(folderId)}
+             onMoveNoteToFolder={(noteId, folderId) => updateNote(noteId, { folderId })}
            />
            <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wider">Notes</div>
            {notes.filter(note => {
@@ -889,7 +891,12 @@ const EditorWorkspace = () => {
              const matchesFolder = !selectedFolderId || note.folderId === selectedFolderId;
              return matchesSearch && matchesFolder;
            }).map(note => (
-               <div key={note.id} className="relative group flex items-center">
+               <div 
+                 key={note.id} 
+                 className="relative group flex items-center"
+                 draggable
+                 onDragStart={(e) => e.dataTransfer.setData('noteId', note.id)}
+               >
                     <button 
                         onClick={() => setActiveNoteId(note.id)}
                         className={`w-full flex items-center gap-3 px-3 py-2 group-hover:pr-28 text-sm rounded-lg transition-all text-left ${
@@ -1273,7 +1280,7 @@ const EditorWorkspace = () => {
                >
                  <textarea 
                     ref={textareaRef}
-                    className="flex-1 w-full bg-transparent text-gray-700 dark:text-gray-300 font-mono text-sm p-6 resize-none focus:outline-none custom-scrollbar leading-relaxed break-words whitespace-pre-wrap"
+                    className="flex-1 w-full bg-transparent text-gray-700 dark:text-gray-300 font-mono text-sm p-6 pb-32 resize-none focus:outline-none custom-scrollbar leading-relaxed break-words whitespace-pre-wrap"
                     placeholder="# Start typing your note here... (Type / for commands)"
                     value={editorContent}
                     onChange={(e) => handleContentChange(e.target.value)}
