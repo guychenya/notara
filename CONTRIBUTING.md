@@ -49,15 +49,26 @@ Thank you for your interest in contributing to Notara! We welcome contributions 
 
 ## 📝 Code Guidelines
 
-### TypeScript
-- Use TypeScript for all new code
-- Define proper types and interfaces
-- Avoid `any` types when possible
+### TypeScript (v1.3.1 Standards)
+- **100% type-safe** - No `any` types allowed
+- Define proper interfaces for all API responses
+- Use discriminated unions for complex types
+- Leverage TypeScript's type inference
+- Document complex types with JSDoc
 
 ### React
 - Use functional components with hooks
+- Implement proper cleanup in useEffect
+- Use useCallback for stable function references
+- Add proper dependency arrays
 - Keep components small and focused
-- Use meaningful component and variable names
+
+### Performance (v1.3.1)
+- Keep bundle size optimized (< 700 KB total)
+- Use code splitting for large features
+- Check bundle size after changes: `npm run build`
+- Monitor memory usage in DevTools
+- Use AbortSignal for async operations
 
 ### Styling
 - Use Tailwind CSS utility classes
@@ -103,9 +114,10 @@ Thank you for your interest in contributing to Notara! We welcome contributions 
 ## 📚 Resources
 
 - **Live Demo:** https://notara.reliatrack.org
-- **Documentation:** See README.md and PROJECT_REPORT.md
-- **Tech Stack:** React 18, TypeScript, Tailwind CSS, Vite
-- **AI Provider:** Google Gemini API
+- **Documentation:** See README.md, PERFORMANCE.md, CODE_REVIEW.md
+- **Tech Stack:** React 19, TypeScript (100% type-safe), Tailwind CSS, Vite
+- **Bundle:** 165KB gzipped with 4 optimized chunks
+- **AI Provider:** Google Gemini API + Multi-provider support
 
 ## 💬 Questions?
 

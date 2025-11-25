@@ -4,10 +4,12 @@
 
 **AI-Powered Note-Taking, Reimagined**
 
-[![Version](https://img.shields.io/badge/version-1.3.0-emerald.svg)](https://github.com/guychenya/notara)
+[![Version](https://img.shields.io/badge/version-1.3.1-emerald.svg)](https://github.com/guychenya/notara)
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](https://opensource.org/licenses/MIT)
 [![Made with React](https://img.shields.io/badge/Made%20with-React-61DAFB?logo=react)](https://reactjs.org/)
 [![Live Demo](https://img.shields.io/badge/Demo-notara.reliatrack.org-emerald)](https://notara.reliatrack.org)
+[![Bundle Size](https://img.shields.io/badge/bundle-165KB%20gzip-success.svg)](https://github.com/guychenya/notara)
+[![TypeScript](https://img.shields.io/badge/TypeScript-100%25-blue.svg)](https://www.typescriptlang.org/)
 
 </div>
 
@@ -20,6 +22,13 @@ Notara is an intelligent note-taking application that combines the simplicity of
 **🌐 Live Demo:** [https://notara.reliatrack.org](https://notara.reliatrack.org)
 
 ## 🚀 Key Features
+
+### ⚡ Performance & Optimization (v1.3.1)
+- **Ultra-Fast Loading** - 165KB gzipped bundle (63% smaller)
+- **Code Splitting** - Smart chunking for optimal caching
+- **Type-Safe** - 100% TypeScript with zero `any` types
+- **Error Resilient** - Graceful error handling with recovery
+- **Memory Efficient** - Proper cleanup prevents memory leaks
 
 ### 📁 Organization & Structure (v1.3.0)
 - **Folder System** - Organize notes into folders and subfolders
@@ -155,16 +164,18 @@ Get your API key:
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** React 18 + TypeScript
+- **Frontend:** React 19 + TypeScript (100% type-safe)
 - **Styling:** Tailwind CSS
-- **Build:** Vite
-- **AI:** Google Gemini API
+- **Build:** Vite with optimized code splitting
+- **AI:** Google Gemini API + Multi-provider support
 - **Storage:** LocalStorage (client-side)
 - **PWA:** Service Workers + Web Manifest
+- **Syntax Highlighting:** Highlight.js (17 languages)
+- **Bundle:** 165KB gzipped (4 optimized chunks)
 
 ## 📋 Roadmap
 
-### ✅ Completed (v1.2.0)
+### ✅ Completed (v1.3.1)
 - [x] Core note-taking functionality
 - [x] AI-powered text tools
 - [x] Resizable AI chat sidebar with dotted canvas
@@ -179,6 +190,11 @@ Get your API key:
 - [x] Search & favorites
 - [x] Thin scrollbars (4px)
 - [x] Always-visible logo toggle
+- [x] Bundle size optimization (63% reduction)
+- [x] 100% TypeScript type safety
+- [x] Error boundary & graceful error handling
+- [x] Memory leak prevention
+- [x] Code splitting & caching optimization
 
 ### 🔜 Next Steps
 - [ ] Cloud sync & backup
