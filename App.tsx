@@ -940,32 +940,38 @@ const EditorWorkspace = () => {
            >
               <Plus className="w-4 h-4 mr-2" /> New Note
            </Button>
-           <div className="flex items-center gap-2">
+           <div className="grid grid-cols-2 gap-2">
             <Button 
                 variant="secondary"
                 onClick={() => mdFileInputRef.current?.click()}
-                className="w-full"
+                className="text-xs"
+                title="Import Markdown"
             >
-                <Upload className="w-4 h-4 mr-2" /> Import .md
+                <Upload className="w-3.5 h-3.5 mr-1" /> Import
             </Button>
             <Button 
                 variant="secondary"
                 onClick={() => obsidianVaultInputRef.current?.click()}
-                className="w-full"
+                className="text-xs"
                 title="Import Obsidian Vault"
             >
-                <Folder className="w-4 h-4 mr-2" /> Obsidian
+                <Folder className="w-3.5 h-3.5 mr-1" /> Obsidian
             </Button>
             <Button 
                 variant="secondary"
                 onClick={handleExportAsObsidian}
-                className="px-2.5"
+                className="text-xs"
                 title="Export as Obsidian Vault"
             >
-                <Download className="w-4 h-4" />
+                <Download className="w-3.5 h-3.5 mr-1" /> Export
             </Button>
-            <Button variant="secondary" onClick={toggleTheme} className="px-2.5">
-                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            <Button 
+                variant="secondary" 
+                onClick={toggleTheme}
+                className="text-xs"
+            >
+                {theme === 'dark' ? <Sun className="w-3.5 h-3.5 mr-1" /> : <Moon className="w-3.5 h-3.5 mr-1" />}
+                {theme === 'dark' ? 'Light' : 'Dark'}
             </Button>
            </div>
         </div>
