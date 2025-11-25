@@ -4,6 +4,7 @@
 
 **AI-Powered Note-Taking, Reimagined**
 
+[![Version](https://img.shields.io/badge/version-1.3.0-emerald.svg)](https://github.com/guychenya/notara)
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](https://opensource.org/licenses/MIT)
 [![Made with React](https://img.shields.io/badge/Made%20with-React-61DAFB?logo=react)](https://reactjs.org/)
 [![Live Demo](https://img.shields.io/badge/Demo-notara.reliatrack.org-emerald)](https://notara.reliatrack.org)
@@ -20,21 +21,38 @@ Notara is an intelligent note-taking application that combines the simplicity of
 
 ## 🚀 Key Features
 
-### 📝 Smart Note Management
+### 📁 Organization & Structure (v1.3.0)
+- **Folder System** - Organize notes into folders and subfolders
+- **Enhanced Search** - Filter by tags, date range, favorites
 - **Favorites System** - Star important notes for quick access
-- **Search & Filter** - Real-time search across all notes
+- **Auto-Tagging** - AI generates relevant tags with colorful badges
+- **Breadcrumbs** - Visual navigation path
+
+### 📝 Smart Note Management
+- **Wiki-Style Links** - `[[Note Title]]` to link between notes
+- **Table of Contents** - Auto-generated from headings
 - **Duplicate Notes** - Clone notes with one click
 - **Auto-Save** - Never lose your work
 - **Word Count & Timestamps** - Track your writing progress
 
 ### 🤖 AI-Powered Tools
-- **Resizable AI Chat Sidebar** - Gemini Canvas-style interface with drag-to-resize and dotted canvas background
-- **Action Buttons** - Discard, Copy, New Note, and Insert buttons on every AI response
+- **Resizable AI Chat Sidebar** - Gemini Canvas-style interface with drag-to-resize
+- **Action Buttons** - Discard, Copy, New Note, and Insert on every AI response
 - **9 AI Text Tools** - Summarize, Improve, Explain, Continue, Expand, Shorten, Bullets, Actions, Translate
 - **Text Selection Toolbar** - Context-aware AI operations on selected text
-- **Auto-Tagging** - AI generates relevant tags for your notes
 - **Smart Assistance** - Context-aware help based on current note
-- **Unified Interface** - All AI interactions in one beautiful sidebar
+
+### 💻 Advanced Markdown
+- **Syntax Highlighting** - 180+ languages with copy button
+- **Code Blocks** - Beautiful syntax-highlighted code with GitHub Dark theme
+- **Extended Markdown** - Tables, checkboxes, images, videos
+- **Live Preview** - Split-screen markdown editor
+
+### 📤 Export & Import (v1.3.0)
+- **Multiple Formats** - Export to HTML, DOCX, Markdown, PDF
+- **Obsidian Compatible** - Import/export Obsidian vaults
+- **Batch Export** - Export multiple notes at once
+- **Preserve Formatting** - Maintains syntax highlighting and styles
 
 ### ⚡ Productivity Features
 - **Command Palette** (Cmd/Ctrl+K) - Quick access to all features
