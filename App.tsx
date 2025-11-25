@@ -403,12 +403,12 @@ const EditorWorkspace = () => {
   ];
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Don't interfere if slash menu is handling keys
-    if (slashMenuOpen && ['ArrowUp', 'ArrowDown', 'Enter', 'Escape'].includes(e.key)) {
-        return; // Let SlashCommandMenu handle it
+    // Close slash menu on Enter in textarea
+    if (e.key === 'Enter' && slashMenuOpen) {
+        setSlashMenuOpen(false);
     }
     
-    // Only handle slash menu opening
+    // Open slash menu on '/' key
     if (e.key === '/' && !slashMenuOpen) {
         if (textareaRef.current) {
             const pos = textareaRef.current.selectionStart;

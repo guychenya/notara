@@ -44,10 +44,15 @@ export const SlashCommandMenu: React.FC<Props> = ({ isOpen, position, commands, 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
 
-      // Only handle if the menu is actually visible and not if focus is in textarea
+      // Only handle keys if NOT in textarea
       const target = e.target as HTMLElement;
-      if (target.tagName === 'TEXTAREA' && e.key === 'Enter') {
-        // Let textarea handle Enter normally
+      if (target.tagName === 'TEXTAREA') {
+        // Only handle Escape to close menu, let textarea handle everything else
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          e.stopPropagation();
+          onClose();
+        }
         return;
       }
 
